@@ -1,0 +1,2 @@
+Node:
+    -run_follower: wenn aufgerufen, dann wurde Protokoll für Leader finden abgeschlossen, es gibt einen Leader und die Node selbst ist es nicht. 
