@@ -1,0 +1,149 @@
+Node:
+    rolle: Master, Slave, unknown
+    ip: Damit er weiß, wer er ist
+    port: Kommunikation
+    lastHeartbeat: Datetime
+    verkehrssituatiton: objekt der situation
+    pfadFuerBackupDatei: Speichern der situation für Ausfallsicherheit
+    
+    connections: verbindungen zu anderen Nodes
+        ip
+        rolle
+        verbindung
+
+    nodeWirdGestartet(ip, port){
+        rolleFinden
+    }
+
+    rolleFinden(){
+        connectToOtherNodes() //mitAnderenNodes verbinden, und schauen, welche Rollen diese haben
+        askOtherNodesAboutRoles() //abfrage, welche Rollen diese haben:
+
+        if: gibtsAktivenMaster()//es gibt bereits aktiven Master
+            ich werde zum Slave
+        else: // es gibt keinen aktiven Master
+            smallestIP = findeSmallestIpInConnections()//abfragen, welche IPs die anderen haben
+            if: myIp < smallestIP //ich habe die kleinste IP
+                becomeMaster() //ich mache mich zum Master
+                tellAboutMaster() // ich verkünde den anderen, dass ich Master bin
+            else: // ich habe nicht die kleinste IP
+                becomeSlave() //ich werde zum Slave
+    }
+
+
+    connectToOtherNodes(){
+        iteration über den Adressbereich für Nodes:
+            fragt alle Potentiellen NodeIPs bis auf seine an
+            speichert Verbindungen zu den Nodes in dem Object
+    }
+
+    askOtherNodesAboutRoles(){
+        iteration über connections:
+            bei den Connections speichern, welche Rolle diese haben
+    }
+
+    boolean gibtsAktivenMaster(){
+        iteration über connections
+            if verbindung.master()
+                return True
+
+        else False
+
+    }
+
+    tellAboutMaster(){
+        iteration über Connections
+            jeder Conncetion sagen: ich bin master
+    }
+
+    becomeMaster(){
+        //heartbeats an Connections senden und receiven
+        //nachrichten von clients bekommen und beantworten
+        //nachrichten von slaves bekommen und verarbeiten
+
+        //neue Knoten können hinzugefügt werden
+        //alte Knoten können sich abmelden
+    }
+
+    becomeSlave(){
+        // empfange heartbeats von Master und beantworte diese
+            // wenn keine heartbeats mehr kommen:
+            // --> Neuen Leader suchen:
+            electLeader()
+        // empfange neue Zustände von Master, Speichern und Acknowledgen
+        // empfange Anfragen von Clients und leite diese an Master weiter
+        // empfange Nachrichten von Master und sende diese an Clients
+
+        //neue Knoten können hinzugefügt werden
+        //alte Knoten können sich abmelden
+    }
+
+    nachrichtenVonClients(){
+        //Empfange nachrichten
+        // verarbeite Nachricht logisch
+        // speichere neuen Zustand konsistent ab
+        // sende neuen Zustand an Nodes
+        // warte Auf bestästigung der anderen Nodes
+        // sende antwort an clients
+    }
+
+    electLeaderFromSlavePerspective(){ //keine heartbeats mehr vom Master
+        anderen Node anfragen, ob dieser lebt:
+        if andererNodeLebt:
+            wer hat den akutelsten Wissenstand:
+                aktualisieren
+            schauen, wer die kleinste IP hat,
+            if kleinsteIP:
+                becomeMaster
+            else:
+                becomeSlave
+        else: 
+            becomeMaster
+    }
+
+    nachrichtenVonSlaves(){
+        //Empfange nachrichten
+        // verarbeite Nachricht logisch
+        // speichere neuen Zustand konsistent ab
+        // sende neuen Zustand an Nodes
+        // warte Auf bestästigung der anderen Nodes
+        // sende antwort an slave
+    }
+
+    empfangeHeartbeatvonMaster(){
+        bekommeHeartBeatVonMaster()
+        setzte Timestamp auf aktuell()
+        gib response()
+    }
+
+    überprüfeHeartbeatPeriodisch(){
+
+        check ob (aktuellerZeit - heartBeatZeit) > Schwellwert:
+            electLeaderFromSlavePerspective
+        time.sleep()
+    
+    }
+
+    runSlave(){
+
+        while True
+            überprüfeHeartbeatPeriodisch
+            neueVerbindungen...
+
+    }
+
+
+    runMaster(){
+
+        while True
+            sendeHeartbeatPeriodisch
+            neueVerbindungen...
+
+    }
+
+
+    keineVerbindungVonMasterZuSlave()
+    {
+        löscheVerbindung zu diesem Node
+        dieer gelöschte Node wird dann nicht mehr für die akutalisierung des Konsisitenten Speichers verwendet
+    }
