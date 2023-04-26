@@ -1,5 +1,7 @@
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
+
 import helpers.*;
 
 public class Node extends Thread{
@@ -27,7 +29,7 @@ public class Node extends Thread{
 
     @Override
     public void run(){
-        // while(true){
+        while(true){
             if(this.role == Role.FOLLOWER){
                 this.run_follower();
             }
@@ -37,7 +39,7 @@ public class Node extends Thread{
             else if(this.role == Role.UNKNOWN){
                 System.out.println("help what to do now???");
             }
-        // }
+        }
     }
 
     /*
@@ -47,14 +49,24 @@ public class Node extends Thread{
         //init connection to leader
         //send initialize Message to Leader
         //open for clients, always accept new clients
-        while (this.role == Role.FOLLOWER && (LocalDateTime.now().toInstant(null).toEpochMilli() - this.lastHeartBeat.toInstant(null).toEpochMilli()) <= this.TIMEOUT){
+        // while (this.role == Role.FOLLOWER && (LocalDateTime.now().toInstant(null).toEpochMilli() - this.lastHeartBeat.toInstant(null).toEpochMilli()) <= this.TIMEOUT){
             
-        }
+        // }
+        System.out.println("running follower");
     }
 
-    private void run_leader(){
+    private void run_leader() {
         Leader leader = new Leader(this);
         leader.start();
+        while(this.role == Role.LEADER){
+            try {
+                TimeUnit.SECONDS.sleep(1);
+                System.out.println("waiting for change, role:" + this.role);
+            } catch (InterruptedException e) {
+                System.err.println(e.toString());
+            }
+        }
+        leader.interrupt();
         //open server socket (in a while)
         //always check for enough followers (when more than half are not responding go in idle state)
         //read messages, answer them

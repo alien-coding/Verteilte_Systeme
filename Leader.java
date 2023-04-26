@@ -15,6 +15,7 @@ public class Leader extends Thread{
     }
 
     public void run(){
+        //TODO: send heartbeats
         try{
             ServerSocket serverSocket = new ServerSocket();
             InetSocketAddress address = new InetSocketAddress(this.parentNode.getIp(), this.parentNode.getPort());
