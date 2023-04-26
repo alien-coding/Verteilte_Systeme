@@ -4,19 +4,16 @@ import java.net.Socket;
 import Message.*;
 
 public class LeaderMessageHandler extends MessageHandler {
-    private Leader parentLeader;
 
     /**
      * Initializes input and output streams on creation, since every Message handler is 
      * responsible for one single connection. Object is only called for new accepted connections,
-     * purpose is therefore receiving messages. Handling is different if parent node is leader or follower.
-     * @param parentNode node which is parent of this process, nescesary for handling messages
+     * purpose is therefore receiving messages. 
+     * @param parentNode node which is parent of this process, necessary for handling messages
      * @param newConnection the new connection that has been accepted and has to be initialized
      */
-    public LeaderMessageHandler(Node parentNode, Leader parentLeader, Socket newConnection){
+    public LeaderMessageHandler(Node parentNode, Socket newConnection){
         super(parentNode, newConnection);
-        this.parentLeader = parentLeader;
-        this.initializeStreams(newConnection);
     }
 
     public void run(){

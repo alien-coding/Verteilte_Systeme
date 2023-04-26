@@ -21,7 +21,7 @@ public class Leader extends Thread{
             serverSocket.bind(address);
             while(!serverSocket.isClosed()){
                 Socket newConnection = serverSocket.accept();
-                LeaderMessageHandler messageHandler = new LeaderMessageHandler(parentNode, this, newConnection);
+                LeaderMessageHandler messageHandler = new LeaderMessageHandler(parentNode, newConnection);
                 this.connections.add(newConnection);
                 messageHandler.start();
             }
@@ -29,6 +29,7 @@ public class Leader extends Thread{
         }
         catch (IOException e){
             System.out.println("Opening as a leader failed");
+            System.err.println(e.toString());
         }
     }
 
