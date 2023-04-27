@@ -14,7 +14,7 @@ public class FollowerClientMessageHandler extends MessageHandler{
     public void run(){
         while(!this.socket.isClosed()){
             Message message = this.readMessage();
-            System.out.println(this.parentNode.getIp() + " received a message: " + message.getPayload().toString());
+            System.out.println(this.parentNode.getIp() + " received client message, forwarding to leader.");
             Message answerFromLeader = this.parentFollower.getConnectionToLeader().sendMessage(message);
             try {
                 this.outputStream.writeObject(answerFromLeader);

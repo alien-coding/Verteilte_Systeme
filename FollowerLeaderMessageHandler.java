@@ -11,16 +11,17 @@ public class FollowerLeaderMessageHandler extends MessageHandler{
     }
 
     public void run(){
-        while(!this.socket.isClosed()){
-            Message message = this.readMessage();
-            System.out.println(this.parentNode.getIp() + " received a message: " + message.getPayload().toString());
-            Message answer = new Message(this.parentNode.getIp(), message.getSender(), "", MessageType.UNKNOWN);
-            try {
-                this.outputStream.writeObject(answer);
-            } catch (IOException e) {
-                System.err.println(e.toString());
-            }
-        }
+        //TODO: Heartbeat handling here!!
+        // while(!this.socket.isClosed()){
+        //     Message message = this.readMessage();
+        //     System.out.println(this.parentNode.getIp() + " received a message: " + message.getPayload());
+        //     Message answer = new Message(this.parentNode.getIp(), message.getSender(), "", MessageType.UNKNOWN);
+        //     try {
+        //         this.outputStream.writeObject(answer);
+        //     } catch (IOException e) {
+        //         System.err.println(e.toString());
+        //     }
+        // }
     }
 
 }

@@ -19,8 +19,8 @@ public class LeaderMessageHandler extends MessageHandler {
     public void run(){
         while(!this.socket.isClosed()){
             Message message = this.readMessage();
-            System.out.println(this.parentNode.getIp() + " received a message: " + message.getPayload().toString());
-            Message answer = new Message(this.parentNode.getIp(), message.getSender(), "", MessageType.UNKNOWN);
+            System.out.println(this.parentNode.getIp() + " received a message: " + message.getPayload());
+            Message answer = new Message(this.parentNode.getIp(), message.getSender(), "bekommen", MessageType.READ);
             switch (message.getType()) {
                 case READ:
                     break;
@@ -36,6 +36,7 @@ public class LeaderMessageHandler extends MessageHandler {
 
             try {
                 this.outputStream.writeObject(answer);
+                
             } catch (IOException e) {
                 System.err.println(e.toString());
             }

@@ -27,8 +27,8 @@ public abstract class MessageHandler extends Thread{
     public Message sendMessage(Message message){
         try {
             this.outputStream.writeObject(message);
-            this.outputStream.flush();
-            Message response = (Message) this.inputStream.readObject();
+            // this.outputStream.flush();
+            Message response = this.readMessage();
             return response;
 
         } catch (Exception e) {
@@ -39,13 +39,14 @@ public abstract class MessageHandler extends Thread{
 
     protected void initializeStreams(Socket newConnection){
         try{
+            OutputStream outputStream = newConnection.getOutputStream();
+            DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
+            this.outputStream = new ObjectOutputStream(dataOutputStream);
+
             InputStream inputStream = newConnection.getInputStream();
             DataInputStream dataInputStream = new DataInputStream(inputStream);
             this.inputStream = new ObjectInputStream(dataInputStream);
 
-            OutputStream outputStream = newConnection.getOutputStream();
-            DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
-            this.outputStream = new ObjectOutputStream(dataOutputStream);
         }
         catch(IOException e) {
             System.out.println("Node read initialize failed");

@@ -25,7 +25,6 @@ public class Follower extends Thread {
     public void run(){
         //TODO: handle heartbeats
         this.initLeaderConnection();
-        
         try {
             ServerSocket serverSocket = new ServerSocket();
             InetSocketAddress address = new InetSocketAddress(this.parentNode.getIp(), this.parentNode.getPort());
@@ -49,11 +48,11 @@ public class Follower extends Thread {
             this.connectionToLeader = new FollowerLeaderMessageHandler(parentNode, leaderSocket);
             // this.connections.add(messageHandler);
             this.connectionToLeader.start();
+            System.out.println(this.parentNode.getIp() + " connected successfully to leader node");
 
             Message message = new Message(this.parentNode.getIp(), this.parentNode.leader_ip, this.parentNode.getIp(), MessageType.INITIALIZE);
             Message response = this.connectionToLeader.sendMessage(message);
-            System.out.println(this.parentNode.getIp() + " received master response: " + response);
-
+            System.out.println(this.parentNode.getIp() + " received leader response: " + response.getPayload());
 
 
         } catch (IOException e) {

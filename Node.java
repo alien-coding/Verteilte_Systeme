@@ -49,19 +49,14 @@ public class Node extends Thread{
         // }
         Follower follower = new Follower(this, this.leader_ip, this.leader_port);
         follower.start();
+        this.waitForRoleChange(Role.FOLLOWER);
+        follower.interrupt();
     }
 
     private void run_leader() {
         Leader leader = new Leader(this);
         leader.start();
-        while(this.role == Role.LEADER){
-            try {
-                TimeUnit.SECONDS.sleep(1);
-                System.out.println("waiting for change, role:" + this.role);
-            } catch (InterruptedException e) {
-                System.err.println(e.toString());
-            }
-        }
+        this.waitForRoleChange(Role.LEADER);
         leader.interrupt();
         //open server socket (in a while)
         //always check for enough followers (when more than half are not responding go in idle state)
@@ -69,8 +64,15 @@ public class Node extends Thread{
             //whilst doing so, keep data consistent
     }
 
-    public String send_message(){
-        return "passt";
+    private void waitForRoleChange(Role designatedRole){
+        while(this.role == designatedRole){
+            try {
+                TimeUnit.SECONDS.sleep(1);
+                // System.out.println("waiting for change, role:" + this.role);
+            } catch (InterruptedException e) {
+                System.err.println(e.toString());
+            }
+        }
     }
 
     public HashMap<String, NodeSaver> getAllKnownNodes (){return this.allKnownNodes;}

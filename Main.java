@@ -5,7 +5,9 @@ public class Main {
         Node node1 = new Node(Role.LEADER, "127.0.0.1", 200);
         node1.start();
         Node node2 = new Node(Role.FOLLOWER, "127.0.0.2", 200);
-        // node2.run();
+        node2.leader_ip = "127.0.0.1";
+        node2.leader_port = 200;
+        node2.start();
 
         // try {
         //     TimeUnit.SECONDS.sleep(4);
