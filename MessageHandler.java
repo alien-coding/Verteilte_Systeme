@@ -46,7 +46,6 @@ public abstract class MessageHandler extends Thread{
             InputStream inputStream = newConnection.getInputStream();
             DataInputStream dataInputStream = new DataInputStream(inputStream);
             this.inputStream = new ObjectInputStream(dataInputStream);
-
         }
         catch(IOException e) {
             System.out.println("Node read initialize failed");
