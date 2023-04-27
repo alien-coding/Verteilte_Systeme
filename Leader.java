@@ -15,7 +15,6 @@ public class Leader extends Thread{
     }
 
     public void run(){
-        //TODO: send heartbeats
         try{
             ServerSocket serverSocket = new ServerSocket();
             InetSocketAddress address = new InetSocketAddress(this.parentNode.getIp(), this.parentNode.getPort());
@@ -25,6 +24,7 @@ public class Leader extends Thread{
                 LeaderMessageHandler messageHandler = new LeaderMessageHandler(parentNode, newConnection);
                 this.connections.add(newConnection);
                 messageHandler.start();
+                //TODO: send heartbeats
             }
             serverSocket.close();
         }
@@ -33,6 +33,4 @@ public class Leader extends Thread{
             System.err.println(e.toString());
         }
     }
-
-    
 }
