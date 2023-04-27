@@ -20,7 +20,7 @@ public class LeaderMessageHandler extends MessageHandler {
         while(!this.socket.isClosed()){
             Message message = this.readMessage();
             System.out.println(this.parentNode.getIp() + " received a message: " + message.getPayload());
-            Message answer = new Message(this.parentNode.getIp(), message.getSender(), "bekommen", MessageType.READ);
+            Message answer = new Message(this.parentNode.getIp(), message.getSender(), "Registered you as follower", MessageType.READ); //TODO: change acc type
             switch (message.getType()) {
                 case READ:
                     break;

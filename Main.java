@@ -9,6 +9,11 @@ public class Main {
         node2.leader_port = 200;
         node2.start();
 
+        Node node3 = new Node(Role.FOLLOWER, "127.0.0.3", 200);
+        node3.leader_ip = "127.0.0.1";
+        node3.leader_port = 200;
+        node3.start();
+
         // try {
         //     TimeUnit.SECONDS.sleep(4);
         // } catch (InterruptedException e) {

@@ -2,6 +2,8 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
+import Message.Message;
+import Message.MessageType;
 import helpers.*;
 
 public class Node extends Thread{
