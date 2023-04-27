@@ -12,15 +12,11 @@ public class Node extends Thread{
     private TrafficControlLogic logic;
     private String pathForBackUp;
     private HashMap<String, NodeSaver> allKnownNodes = new HashMap<>();
-
-    public void setPathForBackUp(String pathForBackUp) {
-        this.pathForBackUp = pathForBackUp;
-    }
-
-   
-
     private int TIMEOUT = 300;
-
+    //TODO: change way of getting leader 
+    public String leader_ip;
+    public int leader_port;
+    
     public Node(Role role, String ip, int port){
         this.role = role;
         this.ip = ip;
@@ -50,9 +46,9 @@ public class Node extends Thread{
         //send initialize Message to Leader
         //open for clients, always accept new clients
         // while (this.role == Role.FOLLOWER && (LocalDateTime.now().toInstant(null).toEpochMilli() - this.lastHeartBeat.toInstant(null).toEpochMilli()) <= this.TIMEOUT){
-            
         // }
-        System.out.println("running follower");
+        Follower follower = new Follower(this, this.leader_ip, this.leader_port);
+        follower.start();
     }
 
     private void run_leader() {
@@ -92,4 +88,5 @@ public class Node extends Thread{
     public TrafficControlLogic getLogic() {return this.logic;}
     public void setLogic(TrafficControlLogic logic) {this.logic = logic;}
     public String getPathForBackUp() {return this.pathForBackUp;}
+    public void setPathForBackUp(String pathForBackUp) {this.pathForBackUp = pathForBackUp;}
 }

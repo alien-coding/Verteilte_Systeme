@@ -7,13 +7,13 @@ public class Main {
         Node node2 = new Node(Role.FOLLOWER, "127.0.0.2", 200);
         // node2.run();
 
-        try {
-            TimeUnit.SECONDS.sleep(4);
-        } catch (InterruptedException e) {
-            System.err.println(e.toString());
-        }
+        // try {
+        //     TimeUnit.SECONDS.sleep(4);
+        // } catch (InterruptedException e) {
+        //     System.err.println(e.toString());
+        // }
 
-        node1.setRole(Role.UNKNOWN);
-        System.out.println("changed role to" + node1.getRole());
+        // node1.setRole(Role.FOLLOWER);
+        // System.out.println("changed role to" + node1.getRole());
     }
 }

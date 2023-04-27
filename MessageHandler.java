@@ -24,6 +24,19 @@ public abstract class MessageHandler extends Thread{
         }
     }
 
+    public Message sendMessage(Message message){
+        try {
+            this.outputStream.writeObject(message);
+            this.outputStream.flush();
+            Message response = (Message) this.inputStream.readObject();
+            return response;
+
+        } catch (Exception e) {
+            System.err.println(e.toString());
+            return null;
+        }
+    }
+
     protected void initializeStreams(Socket newConnection){
         try{
             InputStream inputStream = newConnection.getInputStream();
