@@ -4,7 +4,7 @@ import Message.Message;
 import Message.MessageType;
 
 public class Heartbeat extends Thread {
-    private Leader parentLeader;
+    private LeaderMessageHandler parentMessageHandler;
     private int heartbeatInterval;
 
     /**
@@ -12,24 +12,20 @@ public class Heartbeat extends Thread {
      * @param leader Leader who is initializing Heartbeat
      * @param heartbeatInterval in s
      */
-    public Heartbeat(Leader leader, int heartbeatInterval){
-        this.parentLeader = leader;
+    public Heartbeat(LeaderMessageHandler parentMessageHandler, int heartbeatInterval){
+        this.parentMessageHandler = parentMessageHandler;
         this.heartbeatInterval = heartbeatInterval;
     }
 
     public void run(){
-        try {
-            TimeUnit.SECONDS.sleep(this.heartbeatInterval);
-        } catch (InterruptedException e) {
-            System.err.println(e.toString());
-        }
-        for (MessageHandler connection : this.parentLeader.getConnections()) {
-            Message heartbeat = new Message(this.parentLeader.getParentNode().getIp(), 
-                                            connection.socket.getInetAddress().toString(), 
-                                    "heartbeat", MessageType.HEARTBEAT);
-            connection.sendMessage(heartbeat);
+        while(!this.parentMessageHandler.socket.isClosed()){
+            String sender = this.parentMessageHandler.getParentLeader().getParentNode().getIp();
+            String receiver = this.parentMessageHandler.socket.getInetAddress().toString();
+            // System.out.println("sender: " + sender + " receiver: " + receiver);
+            Message heartbeat = new Message(sender, receiver, "heartbeat", MessageType.HEARTBEAT);
+            this.parentMessageHandler.sendMessage(heartbeat);
             try {
-                TimeUnit.SECONDS.sleep(1);
+                TimeUnit.SECONDS.sleep(this.heartbeatInterval);
             } catch (InterruptedException e) {
                 System.err.println(e.toString());
             }

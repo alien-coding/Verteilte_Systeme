@@ -5,6 +5,7 @@ import Message.*;
 public class LeaderMessageHandler extends MessageHandler {
     private Heartbeat heartbeat;
     private Leader parentLeader;
+
     /**
      * Initializes input and output streams on creation, since every Message handler is 
      * responsible for one single connection. Object is only called for new accepted connections,
@@ -15,17 +16,18 @@ public class LeaderMessageHandler extends MessageHandler {
     public LeaderMessageHandler(Node parentNode, Socket newConnection, Leader parentLeader){
         super(parentNode, newConnection);
         this.parentLeader = parentLeader;
-        this.heartbeat = new Heartbeat(this.parentLeader, 1);
+        this.heartbeat = new Heartbeat(this, 1);
     }
 
     public void run(){
         this.getInitMessage();
         this.heartbeat.run();
+        this.sendMessage(new Message("test", "test", "test message", MessageType.UNKNOWN));
         while(!this.socket.isClosed()){
             Message message = this.readMessage();
             System.out.println(this.parentNode.getIp() + " received a message: " + message.getPayload());
             Message answer = new Message(this.parentNode.getIp(), message.getSender(), "message answer", MessageType.READ); //TODO: change acc type
-            Boolean sendAnswer = true;
+            Boolean sendAnswer = false;
             switch (message.getType()) {
                 case READ:
                     break;
@@ -34,7 +36,7 @@ public class LeaderMessageHandler extends MessageHandler {
                 case INITIALIZE:
                     break;
                 case HEARTBEAT:
-                    System.out.println("received Heartbeat from Client");
+                    System.out.println(this.parentNode.getIp() + " received type " + message.getType() + " message: " + message.getPayload());
                     sendAnswer = false;
                     break;
                 case UNKNOWN:
@@ -61,4 +63,6 @@ public class LeaderMessageHandler extends MessageHandler {
             this.getInitMessage(); //give registering node new try to successfully connect
         }
     }
+
+    public Leader getParentLeader() {return this.parentLeader;}
 }
