@@ -26,4 +26,21 @@ public class FollowerClientMessageHandler extends MessageHandler{
             }
         }
     }
+
+    //TODO
+    protected void handleReadMessage(Message message){
+
+    }
+    protected void handleWriteMessage(Message message){
+
+    }
+    protected void handleInitializeMessage(Message message){
+
+    }
+    protected void handleHeartbeatMessage(Message message){
+
+    }
+    protected void handleUnknownMessage(Message message){
+
+    }
 }

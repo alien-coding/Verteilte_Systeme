@@ -47,6 +47,39 @@ public abstract class MessageHandler extends Thread{
         }
     }
 
+    protected void receiveMessagesRoutine(){
+        while(!this.socket.isClosed()){
+            Message message = this.readMessage();
+            System.out.println(this.parentNode.getIp() + " received a " + message.getType().toString() + " message: " + message.getPayload());
+            //TODO: change typeabstract acc 
+            switch (message.getType()) {
+                case READ:
+                    this.handleReadMessage(message);
+                    break;
+                case WRITE:
+                    this.handleWriteMessage(message);
+                    break;
+                case INITIALIZE:
+                    this.handleInitializeMessage(message);
+                    break;
+                case HEARTBEAT:
+                    this.handleHeartbeatMessage(message);
+                    break;
+                case UNKNOWN:
+                    this.handleUnknownMessage(message);
+                    break;                    
+                default:
+                    break;
+            }
+        }
+    }
+
+    protected abstract void handleReadMessage(Message message);
+    protected abstract void handleWriteMessage(Message message);
+    protected abstract void handleInitializeMessage(Message message);
+    protected abstract void handleHeartbeatMessage(Message message);
+    protected abstract void handleUnknownMessage(Message message);
+
     protected void initializeStreams(Socket newConnection){
         try{
             OutputStream outputStream = newConnection.getOutputStream();

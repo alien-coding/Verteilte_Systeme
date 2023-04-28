@@ -35,4 +35,29 @@ public class FollowerLeaderMessageHandler extends MessageHandler{
             }
         }
     }
+
+    @Override
+    protected void handleReadMessage(Message message){
+        System.out.println("Answer not implemented");
+    }
+
+    @Override
+    protected void handleWriteMessage(Message message){
+        System.out.println("Answer not implemented");
+    }
+    
+    @Override
+    protected void handleInitializeMessage(Message message){
+        System.out.println("Answer not implemented");
+    }
+    
+    @Override
+    protected void handleHeartbeatMessage(Message message){
+        System.out.println("Answer not implemented");
+    }
+    
+    @Override
+    protected void handleUnknownMessage(Message message){
+        System.out.println("Answer not implemented");
+    }
 }
