@@ -1,4 +1,5 @@
 package Project;
 public class Config {
-    public static final int HEARTBEAT_INTERVAL = 1;
+    public static final long HEARTBEAT_INTERVAL = 100; // in milliseconds
+    public static final long HEARTBEAT_TIMEOUT = 2000; // in milliseconds
 }

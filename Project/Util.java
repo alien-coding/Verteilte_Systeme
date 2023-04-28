@@ -3,9 +3,9 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class Util {
     
-    public static void sleep(int seconds){
+    public static void sleep(long milliseconds){
         try {
-            TimeUnit.SECONDS.sleep(seconds);
+            TimeUnit.MILLISECONDS.sleep(milliseconds);
         } catch (InterruptedException e) {
             System.err.println(e.toString());
         }

@@ -60,6 +60,7 @@ public class Follower extends Thread {
             Message message = new Message(this.parentNode.getIp(), this.parentNode.leader_ip, payload, MessageType.INITIALIZE);
             Message response = this.connectionToLeader.sendMessageGetResponse(message);
             System.out.println(this.parentNode.getIp() + " received initial leader response: " + response.getPayload());
+
             if(response.getType() == MessageType.SUCCESS){
                 this.connectionToLeader.start();
             }

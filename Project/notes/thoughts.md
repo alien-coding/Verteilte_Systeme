@@ -2,24 +2,29 @@
 
     -run_follower: wenn aufgerufen, dann wurde Protokoll für Leader finden abgeschlossen, es gibt einen Leader und die Node selbst ist es nicht.
 
-Heatbeat timeouts:
-    bei Leader:
-        -wenn ein follower nicht mehr antwortet wird davon ausgegangen, das er tot ist. (gilt auch für mehrere)
-        ->direkt nach EINER fehlenden Antwort (timeout von 2 sek)
-        --> connection schließen (alles was dazugehört wie clients benachrichtigen)
-    bei Follower:
-        -wenn leader keine heartbeats mehr sendet (timeout von 2 sek)
-        -frage alle anderen Nodes an, ob diese noch leben
-            -wenn ja -> neue Election
-            -wenn nein -> selber in Masterposition, da er nun alleine im Netz ist
+## Heatbeat timeouts
 
-Election:
-    -Wenn nur eine node exisitert: geht direkt in Leader rolle, wartet auf follower (damit system auch mit nur einer Node arbeitet)
-    -Wenn leader schon existiert (es gibt mehr als eine Node):
-        -Als follower dem bestehenden leader beitreten in Netz
-    -Wenn leader nicht mehr antwortet (tot):
-        -Neubestimmung des Leaders: geringste IP wird neuer Leader.
-        ->Dazu: nodes fragen alle anderen an, welche niedrigste sie kennen. Wenn nein -> Leader, wenn ja -> Weiterleitung
+## bei Leader
+
+-wenn ein follower nicht mehr antwortet wird davon ausgegangen, das er tot ist. (gilt auch für mehrere)
+->direkt nach EINER fehlenden Antwort (timeout von 2 sek)
+--> connection schließen (alles was dazugehört wie clients benachrichtigen)
+
+## bei Follower
+
+-wenn leader keine heartbeats mehr sendet (timeout von 2 sek)
+-frage alle anderen Nodes an, ob diese noch leben
+    -wenn ja -> neue Election
+    -wenn nein -> selber in Masterposition, da er nun alleine im Netz ist
+
+## Election
+
+-Wenn nur eine node exisitert: geht direkt in Leader rolle, wartet auf follower (damit system auch mit nur einer Node arbeitet)
+-Wenn leader schon existiert (es gibt mehr als eine Node):
+    -Als follower dem bestehenden leader beitreten in Netz
+-Wenn leader nicht mehr antwortet (tot):
+    -Neubestimmung des Leaders: geringste IP wird neuer Leader.
+    ->Dazu: nodes fragen alle anderen an, welche niedrigste sie kennen. Wenn nein -> Leader, wenn ja -> Weiterleitung
 
 ## MessageTypes
 

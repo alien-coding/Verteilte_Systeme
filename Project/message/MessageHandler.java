@@ -19,6 +19,14 @@ public abstract class MessageHandler extends Thread{
     protected Message readMessage(){
         try {
             return (Message) this.inputStream.readObject();
+        } catch (EOFException e) {
+            try {
+                System.out.println("Detected that other side closed socket. Closing as well.");
+                this.socket.close();
+            } catch (IOException e1) {
+                System.err.println(e1.toString());
+            }
+            return null;
         } catch (Exception e){
             System.err.println(e.toString());
             return null;
@@ -48,8 +56,8 @@ public abstract class MessageHandler extends Thread{
     }
 
     protected void receiveMessagesRoutine(){
-        while(!this.socket.isClosed()){
-            Message message = this.readMessage();
+        Message message = this.readMessage();
+        if(message != null){
             System.out.println(this.parentNode.getIp() + " received a " + message.getType().toString() + " message: " + message.getPayload());
             switch (message.getType()) {
                 case INITIALIZE:
@@ -77,6 +85,9 @@ public abstract class MessageHandler extends Thread{
                     break;
             }
         }
+        else{{
+            System.out.println("Message was null");
+        }}
     }
 
     protected abstract void handleInitializeMessage(Message message);
@@ -96,7 +107,7 @@ public abstract class MessageHandler extends Thread{
         Message answer = new Message(this.parentNode.getIp(), message.getSender(), "Please do not send answer codes as request.", MessageType.ERROR);
         this.sendMessage(answer);
     }
-    
+
     protected void handleAckMessage(Message message){
         Message answer = new Message(this.parentNode.getIp(), message.getSender(), "Please do not send answer codes as request.", MessageType.ERROR);
         this.sendMessage(answer);
@@ -118,6 +129,10 @@ public abstract class MessageHandler extends Thread{
         }        
     }
 
-    public Socket getSocket(){return this.socket;}
+    public void cancel(){
+        interrupt();
+    }
 
+    public Socket getSocket(){return this.socket;}
+    public Node getParentNode(){return this.parentNode;}
 }

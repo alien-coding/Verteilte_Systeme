@@ -27,7 +27,9 @@ public class LeaderMessageHandler extends MessageHandler {
     public void run(){
         this.getInitMessage();
         this.heartbeat.start();
-        this.receiveMessagesRoutine();
+        while(!this.socket.isClosed()){
+            this.receiveMessagesRoutine();
+        }
     }
 
     @Override
@@ -61,8 +63,6 @@ public class LeaderMessageHandler extends MessageHandler {
     @Override
     protected void handleAckMessage(Message message){
         //TODO: implement heartbeat acknowledgement here
-        Message answer = new Message(this.parentNode.getIp(), message.getSender(), "message answer", MessageType.SUCCESS);
-        this.sendMessage(answer);
     }
     
 
@@ -70,14 +70,22 @@ public class LeaderMessageHandler extends MessageHandler {
         Message message = this.readMessage();
         System.out.println(this.parentNode.getIp() + " received a "+ message.getType() + " message: " + message.getPayload());
         if(message.getType() == MessageType.INITIALIZE){
-            InetSocketAddress clientAddress = (InetSocketAddress) message.getPayload();
-            this.followerIp = clientAddress.getHostName();
-            this.followerPort = clientAddress.getPort();
-            System.out.println("Leader registered " + this.followerIp);
+            try {
+                InetSocketAddress clientAddress = (InetSocketAddress) message.getPayload();
+                this.followerIp = clientAddress.getHostName();
+                this.followerPort = clientAddress.getPort();
+                System.out.println("Leader registered " + this.followerIp);
 
-            String payload = "Registered " + this.followerIp + " as Follower.";
-            Message answer = new Message(this.parentNode.getIp(), message.getSender(), payload, MessageType.SUCCESS); 
-            this.sendMessage(answer);
+                String payload = "Registered " + this.followerIp + " as Follower.";
+                Message answer = new Message(this.parentNode.getIp(), message.getSender(), payload, MessageType.SUCCESS); 
+                this.sendMessage(answer);
+            } catch (Exception e) {
+                System.out.println("Init message failed");
+                String payload = "Insert INetSocketAddress of own IP and Port in payload.";
+                Message answer = new Message(this.parentNode.getIp(), message.getSender(), payload, MessageType.ERROR); 
+                this.sendMessage(answer);
+            }
+            
         }
         else{
             Message answer = new Message(this.parentNode.getIp(), message.getSender(), "Please send init Message", MessageType.ERROR);

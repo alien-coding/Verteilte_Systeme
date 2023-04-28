@@ -12,10 +12,16 @@ public class Message implements Serializable {
     
     public Message(String sender, String receiver, Object payload, MessageType type)
     {
-        this.sender = sender;
-        this.receiver = receiver;
-        this.payload = payload;
-        this.type = type;
+        if(sender != null && receiver != null && payload != null && type != null){
+            this.sender = sender;
+            this.receiver = receiver;
+            this.payload = payload;
+            this.type = type;
+        }
+        else{
+            throw new IllegalArgumentException("Arguments must not be null.");
+        }
+        
     }
 
     public Object getPayload (){return this.payload;}

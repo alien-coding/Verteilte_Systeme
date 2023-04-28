@@ -1,12 +1,17 @@
 package Project.follower;
 import java.net.Socket;
+import java.time.Instant;
 
+import Project.CheckHeartbeat;
 import Project.Node;
+import Project.Role;
 import Project.message.Message;
 import Project.message.MessageHandler;
 import Project.message.MessageType;
 
 public class FollowerLeaderMessageHandler extends MessageHandler{
+    private Instant lastHeartbeat;
+    private CheckHeartbeat checker;
 
     /**
      * Executed by follower, handles connection with leader
@@ -15,21 +20,24 @@ public class FollowerLeaderMessageHandler extends MessageHandler{
      */
     public FollowerLeaderMessageHandler(Node parentNode, Socket newConnection){
         super(parentNode, newConnection);
+        this.checker = new CheckHeartbeat(this);
     }
 
     public void run(){
         //TODO: Heartbeat handling here!!
+        checker.start();
         while(!this.socket.isClosed()){
-            Message message = this.readMessage();
-            System.out.println(this.parentNode.getIp() + " received a " + message.getType().toString() + " message: " + message.getPayload());
-            if(message.getType() == MessageType.HEARTBEAT){
-                Message answer = new Message(this.parentNode.getIp(), message.getSender(), " ...  ", MessageType.ACK);
-                this.sendMessage(answer);
-            }
-            else{
-                System.out.println("not covered answer");
-            }
+            this.receiveMessagesRoutine();
         }
+    }
+
+    public void leaderTimedOut(){
+        try {
+            this.socket.close();
+        } catch (Exception e) {
+            System.err.println(e.toString());
+        }
+        this.getParentNode().setRole(Role.UNKNOWN);
     }
     
     @Override
@@ -39,7 +47,9 @@ public class FollowerLeaderMessageHandler extends MessageHandler{
     
     @Override
     protected void handleHeartbeatMessage(Message message){
-        System.out.println("Answer not implemented");
+        this.lastHeartbeat = message.getTime();
+        Message answer = new Message(this.parentNode.getIp(), message.getSender(), " ...  ", MessageType.ACK);
+        this.sendMessage(answer);
     }
     
     @Override
@@ -51,4 +61,6 @@ public class FollowerLeaderMessageHandler extends MessageHandler{
     protected void handleNavigationMessage(Message message){
         System.out.println("Answer not implemented");
     }
+
+    public Instant getLastHeartbeat(){return this.lastHeartbeat;}
 }
