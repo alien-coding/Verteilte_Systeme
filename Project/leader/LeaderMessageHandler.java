@@ -26,34 +26,59 @@ public class LeaderMessageHandler extends MessageHandler {
 
     public void run(){
         this.getInitMessage();
-        this.heartbeat.run();
+        this.heartbeat.start();
         while(!this.socket.isClosed()){
             Message message = this.readMessage();
             System.out.println(this.parentNode.getIp() + " received a message: " + message.getPayload());
-            Message answer = new Message(this.parentNode.getIp(), message.getSender(), "message answer", MessageType.READ); //TODO: change acc type
-            Boolean sendAnswer = false;
+            // Message answer = new Message(this.parentNode.getIp(), message.getSender(), "message answer", MessageType.READ); //TODO: change acc type
             switch (message.getType()) {
                 case READ:
+                    this.messageRead(message);
                     break;
                 case WRITE:
+                    this.messageWrite(message);
                     break;
                 case INITIALIZE:
+                    this.messageInitialize(message);
                     break;
                 case HEARTBEAT:
-                    System.out.println(this.parentNode.getIp() + " received type " + message.getType() + " message: " + message.getPayload());
-                    sendAnswer = false;
+                    this.messageHeartbeat(message);
                     break;
                 case UNKNOWN:
-                    break;
+                    this.messageUnknown(message);
+                    break;                    
                 default:
                     break;
             }
-
-            if(sendAnswer){
-                this.sendMessage(answer); //since this is an answer, no need to get answer
-            }
         }
     }
+
+    private void messageRead(Message message){
+        Message answer = new Message(this.parentNode.getIp(), message.getSender(), "message answer", MessageType.READ);
+        this.sendMessage(answer);
+    }
+
+    private void messageWrite(Message message){
+        Message answer = new Message(this.parentNode.getIp(), message.getSender(), "message answer", MessageType.READ);
+        this.sendMessage(answer);
+    }
+
+    private void messageInitialize(Message message){
+        Message answer = new Message(this.parentNode.getIp(), message.getSender(), "message answer", MessageType.READ);
+        this.sendMessage(answer);
+    }
+
+    private void messageHeartbeat(Message message){
+        Message answer = new Message(this.parentNode.getIp(), message.getSender(), "message answer", MessageType.READ);
+        System.out.println(this.parentNode.getIp() + " received type " + message.getType() + " message: " + message.getPayload());
+        this.sendMessage(answer);
+    }
+
+    private void messageUnknown(Message message){
+        Message answer = new Message(this.parentNode.getIp(), message.getSender(), "message answer", MessageType.READ);
+        this.sendMessage(answer);
+    }
+
     private void getInitMessage(){
         Message message = this.readMessage();
         System.out.println(this.parentNode.getIp() + " received a message: " + message.getPayload());

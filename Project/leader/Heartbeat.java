@@ -7,7 +7,7 @@ import Project.message.MessageType;
 
 public class Heartbeat extends Thread {
     private LeaderMessageHandler parentMessageHandler;
-
+    
     /**
      * 
      * @param leader Leader who is initializing Heartbeat

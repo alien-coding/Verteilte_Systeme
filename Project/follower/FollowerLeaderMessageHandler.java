@@ -30,6 +30,9 @@ public class FollowerLeaderMessageHandler extends MessageHandler{
                 Message answer = new Message(this.parentNode.getIp(), message.getSender(), " ...  ", MessageType.UNKNOWN);
                 this.sendMessage(answer);
             }
+            else{
+                System.out.println("not covered answer");
+            }
         }
     }
 }
