@@ -21,9 +21,7 @@ public class Heartbeat extends Thread {
     public void run(){
         while(!this.parentMessageHandler.socket.isClosed()){
             String sender = this.parentMessageHandler.getParentLeader().getParentNode().getIp();
-            InetSocketAddress test = (InetSocketAddress) this.parentMessageHandler.socket.getRemoteSocketAddress();
-            String receiver = test.getAddress().getHostAddress();
-            System.out.println("sender: " + sender + " receiver: " + receiver);
+            String receiver = this.parentMessageHandler.getFollowerIp();
             Message heartbeat = new Message(sender, receiver, "heartbeat", MessageType.HEARTBEAT);
             this.parentMessageHandler.sendMessage(heartbeat);
             try {

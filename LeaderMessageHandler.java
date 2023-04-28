@@ -25,7 +25,6 @@ public class LeaderMessageHandler extends MessageHandler {
     public void run(){
         this.getInitMessage();
         this.heartbeat.run();
-        this.sendMessage(new Message("test", "test", "test message", MessageType.UNKNOWN));
         while(!this.socket.isClosed()){
             Message message = this.readMessage();
             System.out.println(this.parentNode.getIp() + " received a message: " + message.getPayload());
@@ -72,4 +71,8 @@ public class LeaderMessageHandler extends MessageHandler {
     }
 
     public Leader getParentLeader() {return this.parentLeader;}
+    public String getFollowerIp() {return this.followerIp;}
+    public void setFollowerIp(String followerIp) {this.followerIp = followerIp;}
+    public int getFollowerPort() {return this.followerPort;}
+    public void setFollowerPort(int followerPort) {this.followerPort = followerPort;}
 }
