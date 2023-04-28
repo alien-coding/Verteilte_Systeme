@@ -37,15 +37,11 @@ public class Node extends Thread{
         }
     }
 
-    /*
+
+    /** 
      * When run_follower is called, the leader has to already be figured out.
     */
     private void run_follower(){
-        //init connection to leader
-        //send initialize Message to Leader
-        //open for clients, always accept new clients
-        // while (this.role == Role.FOLLOWER && (LocalDateTime.now().toInstant(null).toEpochMilli() - this.lastHeartBeat.toInstant(null).toEpochMilli()) <= this.TIMEOUT){
-        // }
         Follower follower = new Follower(this, this.leader_ip, this.leader_port);
         follower.start();
         this.waitForRoleChange(Role.FOLLOWER);

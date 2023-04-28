@@ -19,3 +19,14 @@ Election:
     -Wenn leader nicht mehr antwortet (tot):
         -Neubestimmung des Leaders: geringste IP wird neuer Leader. 
         ->Dazu: nodes fragen alle anderen an, welche niedrigste sie kennen. Wenn nein -> Leader, wenn ja -> Weiterleitung
+
+
+MessageTypes:
+UNKNOWN: yeaahhhh
+WRITE: Write the contained body data 
+READ: Get the requested data, body HAS to be empty
+INITIALIZE: Node shall initialize the sender. Body MUST contain InetSocketAddress of own IP and port
+UPDATE_NODE_LIST: from leader to all: sending new node list
+HEARTBEAT: Sending a heartbeat, required answer to this has to be: 
+ERROR: The request could not be processed
+SYNC_NODE_LIST: 
