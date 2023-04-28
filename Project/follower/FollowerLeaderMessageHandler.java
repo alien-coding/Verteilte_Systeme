@@ -23,27 +23,13 @@ public class FollowerLeaderMessageHandler extends MessageHandler{
             Message message = this.readMessage();
             System.out.println(this.parentNode.getIp() + " received a " + message.getType().toString() + " message: " + message.getPayload());
             if(message.getType() == MessageType.HEARTBEAT){
-                Message answer = new Message(this.parentNode.getIp(), message.getSender(), " ...  ", MessageType.HEARTBEAT);
-                this.sendMessage(answer);
-            }
-            else if(message.getType() == MessageType.UNKNOWN){
-                Message answer = new Message(this.parentNode.getIp(), message.getSender(), " ...  ", MessageType.UNKNOWN);
+                Message answer = new Message(this.parentNode.getIp(), message.getSender(), " ...  ", MessageType.ACK);
                 this.sendMessage(answer);
             }
             else{
                 System.out.println("not covered answer");
             }
         }
-    }
-
-    @Override
-    protected void handleReadMessage(Message message){
-        System.out.println("Answer not implemented");
-    }
-
-    @Override
-    protected void handleWriteMessage(Message message){
-        System.out.println("Answer not implemented");
     }
     
     @Override
@@ -57,7 +43,12 @@ public class FollowerLeaderMessageHandler extends MessageHandler{
     }
     
     @Override
-    protected void handleUnknownMessage(Message message){
+    protected void handleSyncNodeListMessage(Message message){
+        System.out.println("Answer not implemented");
+    }
+
+    @Override
+    protected void handleNavigationMessage(Message message){
         System.out.println("Answer not implemented");
     }
 }

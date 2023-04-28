@@ -53,32 +53,51 @@ public abstract class MessageHandler extends Thread{
             System.out.println(this.parentNode.getIp() + " received a " + message.getType().toString() + " message: " + message.getPayload());
             //TODO: change typeabstract acc 
             switch (message.getType()) {
-                case READ:
-                    this.handleReadMessage(message);
-                    break;
-                case WRITE:
-                    this.handleWriteMessage(message);
-                    break;
                 case INITIALIZE:
                     this.handleInitializeMessage(message);
                     break;
                 case HEARTBEAT:
                     this.handleHeartbeatMessage(message);
                     break;
-                case UNKNOWN:
-                    this.handleUnknownMessage(message);
-                    break;                    
+                case SYNC_NODE_LIST:
+                    this.handleSyncNodeListMessage(message);
+                    break;   
+                case NAVIGATION:
+                    this.handleNavigationMessage(message);
+                    break;
+                case SUCCESS:
+                    this.handleSuccessMessage(message);
+                    break;
+                case ERROR:
+                    this.handleErrorMessage(message);
+                    break;
+                case ACK:
+                    this.handleAckMessage(message);
+                    break;
                 default:
                     break;
             }
         }
     }
 
-    protected abstract void handleReadMessage(Message message);
-    protected abstract void handleWriteMessage(Message message);
     protected abstract void handleInitializeMessage(Message message);
     protected abstract void handleHeartbeatMessage(Message message);
-    protected abstract void handleUnknownMessage(Message message);
+    protected abstract void handleSyncNodeListMessage(Message message);
+    protected abstract void handleNavigationMessage(Message message);
+    
+    protected void handleSuccessMessage(Message message){
+        Message answer = new Message(message.getReceiver(), message.getSender(), "Please do not send answer codes as request.", MessageType.ERROR);
+        this.sendMessage(answer);
+    }
+    protected void handleErrorMessage(Message message){
+        Message answer = new Message(message.getReceiver(), message.getSender(), "Please do not send answer codes as request.", MessageType.ERROR);
+        this.sendMessage(answer);
+    }
+    protected void handleAckMessage(Message message){
+        Message answer = new Message(message.getReceiver(), message.getSender(), "Please do not send answer codes as request.", MessageType.ERROR);
+        this.sendMessage(answer);
+    }
+
 
     protected void initializeStreams(Socket newConnection){
         try{

@@ -31,35 +31,38 @@ public class LeaderMessageHandler extends MessageHandler {
     }
 
     @Override
-    protected void handleReadMessage(Message message){
-        Message answer = new Message(this.parentNode.getIp(), message.getSender(), "message answer", MessageType.READ);
-        this.sendMessage(answer);
-    }
-
-    @Override
-    protected void handleWriteMessage(Message message){
-        Message answer = new Message(this.parentNode.getIp(), message.getSender(), "message answer", MessageType.READ);
-        this.sendMessage(answer);
-    }
-    
-    @Override
     protected void handleInitializeMessage(Message message){
-        Message answer = new Message(this.parentNode.getIp(), message.getSender(), "message answer", MessageType.READ);
+        Message answer = new Message(this.parentNode.getIp(), message.getSender(), "message answer", MessageType.SUCCESS);
         this.sendMessage(answer);
     }
     
     @Override
     protected void handleHeartbeatMessage(Message message){
-        Message answer = new Message(this.parentNode.getIp(), message.getSender(), "message answer", MessageType.READ);
+        Message answer = new Message(this.parentNode.getIp(), message.getSender(), "message answer", MessageType.SUCCESS);
         System.out.println(this.parentNode.getIp() + " received type " + message.getType() + " message: " + message.getPayload());
+        System.out.println("ERRRRORRRRRR");
+        this.sendMessage(answer);
+    }
+
+    @Override
+    protected void handleSyncNodeListMessage(Message message){
+        Message answer = new Message(this.parentNode.getIp(), message.getSender(), "message answer", MessageType.SUCCESS);
+        this.sendMessage(answer);
+    }
+
+    @Override
+    protected void handleNavigationMessage(Message message){
+        Message answer = new Message(this.parentNode.getIp(), message.getSender(), "message answer", MessageType.SUCCESS);
+        this.sendMessage(answer);
+    }
+
+    @Override
+    protected void handleAckMessage(Message message){
+        //TODO: implement heartbeat acknowledgement here
+        Message answer = new Message(this.parentNode.getIp(), message.getSender(), "message answer", MessageType.SUCCESS);
         this.sendMessage(answer);
     }
     
-    @Override
-    protected void handleUnknownMessage(Message message){
-        Message answer = new Message(this.parentNode.getIp(), message.getSender(), "message answer", MessageType.READ);
-        this.sendMessage(answer);
-    }
 
     private void getInitMessage(){
         Message message = this.readMessage();

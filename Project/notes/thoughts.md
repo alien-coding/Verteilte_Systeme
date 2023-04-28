@@ -1,5 +1,6 @@
-Node:
-    -run_follower: wenn aufgerufen, dann wurde Protokoll für Leader finden abgeschlossen, es gibt einen Leader und die Node selbst ist es nicht. 
+# Node
+
+    -run_follower: wenn aufgerufen, dann wurde Protokoll für Leader finden abgeschlossen, es gibt einen Leader und die Node selbst ist es nicht.
 
 Heatbeat timeouts:
     bei Leader:
@@ -17,16 +18,24 @@ Election:
     -Wenn leader schon existiert (es gibt mehr als eine Node):
         -Als follower dem bestehenden leader beitreten in Netz
     -Wenn leader nicht mehr antwortet (tot):
-        -Neubestimmung des Leaders: geringste IP wird neuer Leader. 
+        -Neubestimmung des Leaders: geringste IP wird neuer Leader.
         ->Dazu: nodes fragen alle anderen an, welche niedrigste sie kennen. Wenn nein -> Leader, wenn ja -> Weiterleitung
 
+## MessageTypes
 
-MessageTypes:
-UNKNOWN: yeaahhhh
-WRITE: Write the contained body data 
-READ: Get the requested data, body HAS to be empty
-INITIALIZE: Node shall initialize the sender. Body MUST contain InetSocketAddress of own IP and port
-UPDATE_NODE_LIST: from leader to all: sending new node list
-HEARTBEAT: Sending a heartbeat, required answer to this has to be: 
-ERROR: The request could not be processed
-SYNC_NODE_LIST: 
+### Net
+
+-INITIALIZE: New Node wants to connect and communicate with Node
+-HEARTBEAT: Sending a heartbeat, waiting for an ACK
+-SYNC_NODE_LIST: Leader to follower, this means there is a new node list in the body. Else, this is a request with "GET" in the Body.
+
+### Client
+
+-NAVIGATION: Sending position, waiting for SUCCESS with next position
+-_INITIALIZE_: same as in Net just with Client to Node
+
+### Answers
+
+-SUCCESS: Every request that has not failed
+-ERROR: If request cannot be handled, Error is returned. Body contains more information
+-ACK: Heartbeat was acknowledged. Special answer to not interfere with other requests that are answered with SUCCESS

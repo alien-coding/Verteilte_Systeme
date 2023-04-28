@@ -28,19 +28,23 @@ public class FollowerClientMessageHandler extends MessageHandler{
     }
 
     //TODO
-    protected void handleReadMessage(Message message){
-
-    }
-    protected void handleWriteMessage(Message message){
-
-    }
+    @Override
     protected void handleInitializeMessage(Message message){
-
+        System.out.println("Answer not implemented");
     }
+    
+    @Override
     protected void handleHeartbeatMessage(Message message){
-
+        System.out.println("Answer not implemented");
     }
-    protected void handleUnknownMessage(Message message){
+    
+    @Override
+    protected void handleSyncNodeListMessage(Message message){
+        System.out.println("Answer not implemented");
+    }
 
+    @Override
+    protected void handleNavigationMessage(Message message){
+        System.out.println("Answer not implemented");
     }
 }
