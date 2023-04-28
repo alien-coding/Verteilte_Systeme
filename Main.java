@@ -1,5 +1,3 @@
-import java.util.concurrent.TimeUnit;
-
 public class Main {
     public static void main(String[] args) {
         Node node1 = new Node(Role.LEADER, "127.0.0.1", 200);
@@ -15,11 +13,7 @@ public class Main {
         node3.start();
 
 
-        // try {
-        //     TimeUnit.SECONDS.sleep(4);
-        // } catch (InterruptedException e) {
-        //     System.err.println(e.toString());
-        // }
+        // Util.sleep(1);
 
         // node1.setRole(Role.FOLLOWER);
         // System.out.println("changed role to" + node1.getRole());

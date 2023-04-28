@@ -1,21 +1,16 @@
-import java.net.InetSocketAddress;
-import java.util.concurrent.TimeUnit;
-
 import Message.Message;
 import Message.MessageType;
 
 public class Heartbeat extends Thread {
     private LeaderMessageHandler parentMessageHandler;
-    private int heartbeatInterval;
 
     /**
      * 
      * @param leader Leader who is initializing Heartbeat
      * @param heartbeatInterval in s
      */
-    public Heartbeat(LeaderMessageHandler parentMessageHandler, int heartbeatInterval){
+    public Heartbeat(LeaderMessageHandler parentMessageHandler){
         this.parentMessageHandler = parentMessageHandler;
-        this.heartbeatInterval = heartbeatInterval;
     }
 
     public void run(){
@@ -24,11 +19,7 @@ public class Heartbeat extends Thread {
             String receiver = this.parentMessageHandler.getFollowerIp();
             Message heartbeat = new Message(sender, receiver, "heartbeat", MessageType.HEARTBEAT);
             this.parentMessageHandler.sendMessage(heartbeat);
-            try {
-                TimeUnit.SECONDS.sleep(this.heartbeatInterval);
-            } catch (InterruptedException e) {
-                System.err.println(e.toString());
-            }
+            Util.sleep(Config.heartbeatInterval);
         }
     }
 }

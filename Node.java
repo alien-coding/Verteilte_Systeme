@@ -1,6 +1,5 @@
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 import helpers.*;
 
 public class Node extends Thread{
@@ -11,7 +10,6 @@ public class Node extends Thread{
     private TrafficControlLogic logic;
     private String pathForBackUp;
     private HashMap<String, NodeSaver> allKnownNodes = new HashMap<>();
-    private int TIMEOUT = 300;
     //TODO: change way of getting leader 
     public String leader_ip;
     public int leader_port;
@@ -65,12 +63,7 @@ public class Node extends Thread{
 
     private void waitForRoleChange(Role designatedRole){
         while(this.role == designatedRole){
-            try {
-                TimeUnit.SECONDS.sleep(1);
-                // System.out.println("waiting for change, role:" + this.role);
-            } catch (InterruptedException e) {
-                System.err.println(e.toString());
-            }
+            Util.sleep(1);
         }
     }
 

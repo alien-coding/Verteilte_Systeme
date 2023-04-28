@@ -19,7 +19,7 @@ public class LeaderMessageHandler extends MessageHandler {
     public LeaderMessageHandler(Node parentNode, Socket newConnection, Leader parentLeader){
         super(parentNode, newConnection);
         this.parentLeader = parentLeader;
-        this.heartbeat = new Heartbeat(this, 1);
+        this.heartbeat = new Heartbeat(this);
     }
 
     public void run(){
