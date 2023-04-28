@@ -16,19 +16,13 @@ public abstract class MessageHandler extends Thread{
         this.initializeStreams(newConnection);
     }
 
-    protected Message readMessage(){
+    protected Message readMessage() {
         try {
             return (Message) this.inputStream.readObject();
         } catch (EOFException e) {
-            try {
-                System.out.println("Detected that other side closed socket. Closing as well.");
-                this.socket.close();
-            } catch (IOException e1) {
-                System.err.println(e1.toString());
-            }
+            this.closeSocket();
             return null;
         } catch (Exception e){
-            System.err.println(e.toString());
             return null;
         }
     }
@@ -40,6 +34,9 @@ public abstract class MessageHandler extends Thread{
             Message response = this.readMessage();
             return response;
 
+        } catch (EOFException e) {
+            this.closeSocket();
+            return null;
         } catch (Exception e) {
             System.err.println(e.toString());
             return null;
@@ -49,15 +46,16 @@ public abstract class MessageHandler extends Thread{
     public void sendMessage(Message message){
         try {
             this.outputStream.writeObject(message);
-        
+        } catch (EOFException e) {
+            this.closeSocket();
         } catch (IOException e) {
             System.err.println(e.toString());
         }
     }
 
     protected void receiveMessagesRoutine(){
-        Message message = this.readMessage();
-        if(message != null){
+        try {
+            Message message = this.readMessage();
             System.out.println(this.parentNode.getIp() + " received a " + message.getType().toString() + " message: " + message.getPayload());
             switch (message.getType()) {
                 case INITIALIZE:
@@ -84,10 +82,9 @@ public abstract class MessageHandler extends Thread{
                 default:
                     break;
             }
+        } catch (Exception e) {
+            // System.err.println(e.toString());
         }
-        else{{
-            System.out.println("Message was null");
-        }}
     }
 
     protected abstract void handleInitializeMessage(Message message);
@@ -129,8 +126,13 @@ public abstract class MessageHandler extends Thread{
         }        
     }
 
-    public void cancel(){
-        interrupt();
+    protected void closeSocket(){
+        try {
+            System.out.println("Socket disconnected, closing connection");
+            this.socket.close();
+        } catch (IOException e) {
+            System.err.println(e.toString());
+        }
     }
 
     public Socket getSocket(){return this.socket;}

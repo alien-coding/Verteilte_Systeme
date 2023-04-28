@@ -22,9 +22,9 @@ public class CheckHeartbeat extends Thread {
             if(this.parentMessageHandler.getLastHeartbeat() != null){
                 long delta = this.parentMessageHandler.getLastHeartbeat().until(Instant.now(), ChronoUnit.MILLIS);
                 if(delta >= Config.HEARTBEAT_TIMEOUT){
-                    timedOut = true;
-                    System.out.println(this.parentMessageHandler.getParentNode().getIp() + " ran into heartbeat timeout for leader.");
                     this.parentMessageHandler.leaderTimedOut();
+                    System.out.println(this.parentMessageHandler.getParentNode().getIp() + " ran into heartbeat timeout for leader");
+                    timedOut = true;
                 }
             }
         }

@@ -18,14 +18,12 @@ public class Heartbeat extends Thread {
     }
 
     public void run(){
-        int i = 0;
-        while(!this.parentMessageHandler.getSocket().isClosed() && i <= 5){
+        while(!this.parentMessageHandler.getSocket().isClosed()){
             String sender = this.parentMessageHandler.getParentLeader().getParentNode().getIp();
             String receiver = this.parentMessageHandler.getFollowerIp();
             Message heartbeat = new Message(sender, receiver, "heartbeat", MessageType.HEARTBEAT);
             this.parentMessageHandler.sendMessage(heartbeat);
             Util.sleep(Config.HEARTBEAT_INTERVAL);
-            i++;
         }
     }
 }
