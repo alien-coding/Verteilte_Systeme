@@ -50,7 +50,7 @@ public class LeaderMessageHandler extends MessageHandler {
     }
     private void getInitMessage(){
         Message message = this.readMessage();
-        System.out.println(this.parentNode.getIp() + " received a init message: " + message.getPayload());
+        System.out.println(this.parentNode.getIp() + " received a message: " + message.getPayload());
         if(message.getType() == MessageType.INITIALIZE){
             Message answer = new Message(this.parentNode.getIp(), message.getSender(), "Registered you as follower", MessageType.INITIALIZE); //TODO: change acc type
             this.sendMessage(answer);
