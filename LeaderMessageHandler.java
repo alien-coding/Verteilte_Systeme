@@ -1,3 +1,4 @@
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 import Message.*;
@@ -5,6 +6,8 @@ import Message.*;
 public class LeaderMessageHandler extends MessageHandler {
     private Heartbeat heartbeat;
     private Leader parentLeader;
+    private String followerIp;
+    private int followerPort;
 
     /**
      * Initializes input and output streams on creation, since every Message handler is 
@@ -54,6 +57,10 @@ public class LeaderMessageHandler extends MessageHandler {
         Message message = this.readMessage();
         System.out.println(this.parentNode.getIp() + " received a message: " + message.getPayload());
         if(message.getType() == MessageType.INITIALIZE){
+            InetSocketAddress clientAddress = (InetSocketAddress) message.getPayload();
+            this.followerIp = clientAddress.getHostName();
+            this.followerPort = clientAddress.getPort();
+
             Message answer = new Message(this.parentNode.getIp(), message.getSender(), "Registered you as follower", MessageType.INITIALIZE); //TODO: change acc type
             this.sendMessage(answer);
         }

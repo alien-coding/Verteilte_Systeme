@@ -47,9 +47,10 @@ public class Follower extends Thread {
             Socket leaderSocket = new Socket(this.leaderIp, this.leaderPort);
             this.connectionToLeader = new FollowerLeaderMessageHandler(parentNode, leaderSocket);
             // this.connections.add(messageHandler);
-            System.out.println(this.parentNode.getIp() + " connected successfully to leader node");
 
-            Message message = new Message(this.parentNode.getIp(), this.parentNode.leader_ip, this.parentNode.getIp(), MessageType.INITIALIZE);
+            System.out.println(this.parentNode.getIp() + " connected successfully to leader node");
+            InetSocketAddress payload = new InetSocketAddress(this.parentNode.getIp(), this.parentNode.getPort());
+            Message message = new Message(this.parentNode.getIp(), this.parentNode.leader_ip, payload, MessageType.INITIALIZE);
             Message response = this.connectionToLeader.sendMessageGetResponse(message);
             System.out.println(this.parentNode.getIp() + " received leader response: " + response.getPayload());
 

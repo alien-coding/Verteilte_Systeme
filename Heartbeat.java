@@ -1,3 +1,4 @@
+import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
 
 import Message.Message;
@@ -20,8 +21,9 @@ public class Heartbeat extends Thread {
     public void run(){
         while(!this.parentMessageHandler.socket.isClosed()){
             String sender = this.parentMessageHandler.getParentLeader().getParentNode().getIp();
-            String receiver = this.parentMessageHandler.socket.getInetAddress().toString();
-            // System.out.println("sender: " + sender + " receiver: " + receiver);
+            InetSocketAddress test = (InetSocketAddress) this.parentMessageHandler.socket.getRemoteSocketAddress();
+            String receiver = test.getAddress().getHostAddress();
+            System.out.println("sender: " + sender + " receiver: " + receiver);
             Message heartbeat = new Message(sender, receiver, "heartbeat", MessageType.HEARTBEAT);
             this.parentMessageHandler.sendMessage(heartbeat);
             try {
