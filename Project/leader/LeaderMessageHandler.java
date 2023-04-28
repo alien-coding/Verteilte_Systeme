@@ -36,11 +36,11 @@ public class LeaderMessageHandler extends MessageHandler {
         this.sendMessage(answer);
     }
     
+    //If leader receives Heartbeat Message, something has gone wrong. It should only receive ACK answers to its own Heartbeat messages.
     @Override
     protected void handleHeartbeatMessage(Message message){
-        Message answer = new Message(this.parentNode.getIp(), message.getSender(), "message answer", MessageType.SUCCESS);
-        System.out.println(this.parentNode.getIp() + " received type " + message.getType() + " message: " + message.getPayload());
-        System.out.println("ERRRRORRRRRR");
+        String payload = "Don't send heartbeats to the leader. If responding to one, use ACK.";
+        Message answer = new Message(this.parentNode.getIp(), message.getSender(), payload, MessageType.ERROR);
         this.sendMessage(answer);
     }
 
@@ -56,6 +56,7 @@ public class LeaderMessageHandler extends MessageHandler {
         this.sendMessage(answer);
     }
 
+    //leader has to implement this method by its own cause it is waiting for the ack messages of the clients.
     @Override
     protected void handleAckMessage(Message message){
         //TODO: implement heartbeat acknowledgement here

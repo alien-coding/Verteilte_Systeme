@@ -51,7 +51,6 @@ public abstract class MessageHandler extends Thread{
         while(!this.socket.isClosed()){
             Message message = this.readMessage();
             System.out.println(this.parentNode.getIp() + " received a " + message.getType().toString() + " message: " + message.getPayload());
-            //TODO: change typeabstract acc 
             switch (message.getType()) {
                 case INITIALIZE:
                     this.handleInitializeMessage(message);
@@ -84,17 +83,17 @@ public abstract class MessageHandler extends Thread{
     protected abstract void handleHeartbeatMessage(Message message);
     protected abstract void handleSyncNodeListMessage(Message message);
     protected abstract void handleNavigationMessage(Message message);
-    
+
     protected void handleSuccessMessage(Message message){
-        Message answer = new Message(message.getReceiver(), message.getSender(), "Please do not send answer codes as request.", MessageType.ERROR);
+        Message answer = new Message(this.parentNode.getIp(), message.getSender(), "Please do not send answer codes as request.", MessageType.ERROR);
         this.sendMessage(answer);
     }
     protected void handleErrorMessage(Message message){
-        Message answer = new Message(message.getReceiver(), message.getSender(), "Please do not send answer codes as request.", MessageType.ERROR);
+        Message answer = new Message(this.parentNode.getIp(), message.getSender(), "Please do not send answer codes as request.", MessageType.ERROR);
         this.sendMessage(answer);
     }
     protected void handleAckMessage(Message message){
-        Message answer = new Message(message.getReceiver(), message.getSender(), "Please do not send answer codes as request.", MessageType.ERROR);
+        Message answer = new Message(this.parentNode.getIp(), message.getSender(), "Please do not send answer codes as request.", MessageType.ERROR);
         this.sendMessage(answer);
     }
 
