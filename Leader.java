@@ -8,7 +8,7 @@ import java.util.LinkedList;
 
 public class Leader extends Thread{
     private Node parentNode;
-    private LinkedList<Socket> connections = new LinkedList<Socket>(); //all accepted connections are added here
+    private LinkedList<MessageHandler> connections = new LinkedList<MessageHandler>(); //all accepted connections are added here
 
     public Leader(Node node){
         this.parentNode = node;
@@ -21,10 +21,9 @@ public class Leader extends Thread{
             serverSocket.bind(address);
             while(!serverSocket.isClosed()){
                 Socket newConnection = serverSocket.accept();
-                LeaderMessageHandler messageHandler = new LeaderMessageHandler(parentNode, newConnection);
-                this.connections.add(newConnection);
+                LeaderMessageHandler messageHandler = new LeaderMessageHandler(parentNode, newConnection, this);
+                this.connections.add(messageHandler);
                 messageHandler.start();
-                //TODO: send heartbeats
             }
             serverSocket.close();
         }
@@ -33,4 +32,7 @@ public class Leader extends Thread{
             System.err.println(e.toString());
         }
     }
+
+    public LinkedList<MessageHandler> getConnections(){return this.connections;}
+    public Node getParentNode(){return this.parentNode;}
 }

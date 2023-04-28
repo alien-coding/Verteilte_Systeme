@@ -24,7 +24,7 @@ public abstract class MessageHandler extends Thread{
         }
     }
 
-    public Message sendMessage(Message message){
+    public Message sendMessageGetResponse(Message message){
         try {
             this.outputStream.writeObject(message);
             // this.outputStream.flush();
@@ -34,6 +34,15 @@ public abstract class MessageHandler extends Thread{
         } catch (Exception e) {
             System.err.println(e.toString());
             return null;
+        }
+    }
+
+    public void sendMessage(Message message){
+        try {
+            this.outputStream.writeObject(message);
+        
+        } catch (IOException e) {
+            System.err.println(e.toString());
         }
     }
 

@@ -50,7 +50,7 @@ public class Follower extends Thread {
             System.out.println(this.parentNode.getIp() + " connected successfully to leader node");
 
             Message message = new Message(this.parentNode.getIp(), this.parentNode.leader_ip, this.parentNode.getIp(), MessageType.INITIALIZE);
-            Message response = this.connectionToLeader.sendMessage(message);
+            Message response = this.connectionToLeader.sendMessageGetResponse(message);
             System.out.println(this.parentNode.getIp() + " received leader response: " + response.getPayload());
 
             //only start when register answer is received, after it the connection starts to listen for heartbeats etc.

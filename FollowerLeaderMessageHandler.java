@@ -1,4 +1,3 @@
-import java.io.IOException;
 import java.net.Socket;
 
 import Message.Message;
@@ -16,12 +15,8 @@ public class FollowerLeaderMessageHandler extends MessageHandler{
             Message message = this.readMessage();
             System.out.println(this.parentNode.getIp() + " received a " + message.getType() + " message: " + message.getPayload());
             if(message.getType() == MessageType.HEARTBEAT){
-                Message answer = new Message(this.parentNode.getIp(), message.getSender(), "", MessageType.UNKNOWN);
-                try {
-                    this.outputStream.writeObject(answer);
-                } catch (IOException e) {
-                    System.err.println(e.toString());
-                }
+                Message answer = new Message(this.parentNode.getIp(), message.getSender(), "", MessageType.HEARTBEAT);
+                this.sendMessage(answer);
             }
         }
     }
