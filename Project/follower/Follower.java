@@ -44,6 +44,11 @@ public class Follower extends Thread {
         }
     }
 
+    /**
+     * Connecting the Follower node to the leader node. At this point, the leader IP has to be known (set in constructor).
+     * After connection, a init message with own address has to be sent. When everything is fine (get SUCCESS returned), the 
+     * connectionToLeader is started, which contains routine for answering proactive messages. 
+     */
     private void initLeaderConnection(){
         try {
             Socket leaderSocket = new Socket(this.leaderIp, this.leaderPort);
@@ -54,10 +59,13 @@ public class Follower extends Thread {
             InetSocketAddress payload = new InetSocketAddress(this.parentNode.getIp(), this.parentNode.getPort());
             Message message = new Message(this.parentNode.getIp(), this.parentNode.leader_ip, payload, MessageType.INITIALIZE);
             Message response = this.connectionToLeader.sendMessageGetResponse(message);
-            System.out.println(this.parentNode.getIp() + " received leader response: " + response.getPayload());
-
-            //only start when register answer is received, after it the connection starts to listen for heartbeats etc.
-            this.connectionToLeader.start();
+            System.out.println(this.parentNode.getIp() + " received initial leader response: " + response.getPayload());
+            if(response.getType() == MessageType.SUCCESS){
+                this.connectionToLeader.start();
+            }
+            else{
+                throw new IOException("Init Message from " + this.parentNode.getIp() + " was not answered with Success.");
+            }            
         } catch (IOException e) {
             System.out.println("Connecting to leader failed, self is " + this.parentNode.getIp());
             System.err.println(e.toString());

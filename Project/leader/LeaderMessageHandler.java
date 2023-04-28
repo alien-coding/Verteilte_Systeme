@@ -32,6 +32,7 @@ public class LeaderMessageHandler extends MessageHandler {
 
     @Override
     protected void handleInitializeMessage(Message message){
+        //TODO change answer because init is handled elsewhere
         Message answer = new Message(this.parentNode.getIp(), message.getSender(), "message answer", MessageType.SUCCESS);
         this.sendMessage(answer);
     }
@@ -67,17 +68,19 @@ public class LeaderMessageHandler extends MessageHandler {
 
     private void getInitMessage(){
         Message message = this.readMessage();
-        System.out.println(this.parentNode.getIp() + " received a message: " + message.getPayload());
+        System.out.println(this.parentNode.getIp() + " received a "+ message.getType() + " message: " + message.getPayload());
         if(message.getType() == MessageType.INITIALIZE){
             InetSocketAddress clientAddress = (InetSocketAddress) message.getPayload();
             this.followerIp = clientAddress.getHostName();
             this.followerPort = clientAddress.getPort();
+            System.out.println("Leader registered " + this.followerIp);
 
-            Message answer = new Message(this.parentNode.getIp(), message.getSender(), "Registered you as follower", MessageType.INITIALIZE); //TODO: change acc type
+            String payload = "Registered " + this.followerIp + " as Follower.";
+            Message answer = new Message(this.parentNode.getIp(), message.getSender(), payload, MessageType.SUCCESS); 
             this.sendMessage(answer);
         }
         else{
-            Message answer = new Message(this.parentNode.getIp(), message.getSender(), "Please send init Message", MessageType.ERROR); //TODO: change acc type
+            Message answer = new Message(this.parentNode.getIp(), message.getSender(), "Please send init Message", MessageType.ERROR);
             this.sendMessage(answer);
             this.getInitMessage(); //give registering node new try to successfully connect
         }

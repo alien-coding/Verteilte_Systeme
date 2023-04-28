@@ -84,14 +84,19 @@ public abstract class MessageHandler extends Thread{
     protected abstract void handleSyncNodeListMessage(Message message);
     protected abstract void handleNavigationMessage(Message message);
 
+    //the following three codes should not be sent without context (proactively), so they should only received by a routine
+    //that is waiting for an answer (when using sendMessageGetResponse), not by the receivingMessages Routine
+
     protected void handleSuccessMessage(Message message){
         Message answer = new Message(this.parentNode.getIp(), message.getSender(), "Please do not send answer codes as request.", MessageType.ERROR);
         this.sendMessage(answer);
     }
+
     protected void handleErrorMessage(Message message){
         Message answer = new Message(this.parentNode.getIp(), message.getSender(), "Please do not send answer codes as request.", MessageType.ERROR);
         this.sendMessage(answer);
     }
+    
     protected void handleAckMessage(Message message){
         Message answer = new Message(this.parentNode.getIp(), message.getSender(), "Please do not send answer codes as request.", MessageType.ERROR);
         this.sendMessage(answer);
