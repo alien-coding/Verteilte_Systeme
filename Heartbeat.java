@@ -7,7 +7,7 @@ public class Heartbeat extends Thread {
     /**
      * 
      * @param leader Leader who is initializing Heartbeat
-     * @param heartbeatInterval in s
+     * @param HEARTBEAT_INTERVAL in s
      */
     public Heartbeat(LeaderMessageHandler parentMessageHandler){
         this.parentMessageHandler = parentMessageHandler;
@@ -19,7 +19,7 @@ public class Heartbeat extends Thread {
             String receiver = this.parentMessageHandler.getFollowerIp();
             Message heartbeat = new Message(sender, receiver, "heartbeat", MessageType.HEARTBEAT);
             this.parentMessageHandler.sendMessage(heartbeat);
-            Util.sleep(Config.heartbeatInterval);
+            Util.sleep(Config.HEARTBEAT_INTERVAL);
         }
     }
 }

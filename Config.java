@@ -1,3 +1,3 @@
 public class Config {
-    public static final int heartbeatInterval = 1;
+    public static final int HEARTBEAT_INTERVAL = 1;
 }
