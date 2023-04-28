@@ -25,7 +25,6 @@ public class Follower extends Thread {
     }
 
     public void run(){
-        //TODO: handle heartbeats
         this.initLeaderConnection();
         try {
             ServerSocket serverSocket = new ServerSocket();

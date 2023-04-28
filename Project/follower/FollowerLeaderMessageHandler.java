@@ -2,7 +2,6 @@ package Project.follower;
 import java.net.Socket;
 import java.time.Instant;
 
-import Project.CheckHeartbeat;
 import Project.Node;
 import Project.Role;
 import Project.message.Message;
@@ -24,11 +23,11 @@ public class FollowerLeaderMessageHandler extends MessageHandler{
     }
 
     public void run(){
-        //TODO: Heartbeat handling here!!
         checker.start();
         while(!this.socket.isClosed()){
             this.receiveMessagesRoutine();
         }
+        this.getParentNode().setRole(Role.UNKNOWN); //When leader socket shuts down, init the system again
     }
 
     public void leaderTimedOut(){
@@ -47,8 +46,8 @@ public class FollowerLeaderMessageHandler extends MessageHandler{
     
     @Override
     protected void handleHeartbeatMessage(Message message){
-        this.lastHeartbeat = message.getTime();
-        Message answer = new Message(this.parentNode.getIp(), message.getSender(), " ...  ", MessageType.ACK);
+        this.lastHeartbeat = Instant.now(); //not using message.getTime() because time of arrival is key, not time of message creation
+        Message answer = new Message(this.parentNode.getIp(), message.getSender(), "Heartbeat received", MessageType.ACK);
         this.sendMessage(answer);
     }
     

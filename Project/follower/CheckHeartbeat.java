@@ -1,9 +1,9 @@
-package Project;
+package Project.follower;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
-import Project.follower.FollowerLeaderMessageHandler;
+import Project.Config;
 
 public class CheckHeartbeat extends Thread {
     private FollowerLeaderMessageHandler parentMessageHandler;
@@ -17,14 +17,12 @@ public class CheckHeartbeat extends Thread {
      * the FollowerLeaderMessageHandler.leaderTimedOut() is called and own thread is stopped.
      */
     public void run(){
-        Boolean timedOut = false;
-        while(!timedOut){
+        while(!this.parentMessageHandler.getSocket().isClosed()){
             if(this.parentMessageHandler.getLastHeartbeat() != null){
                 long delta = this.parentMessageHandler.getLastHeartbeat().until(Instant.now(), ChronoUnit.MILLIS);
                 if(delta >= Config.HEARTBEAT_TIMEOUT){
                     this.parentMessageHandler.leaderTimedOut();
                     System.out.println(this.parentMessageHandler.getParentNode().getIp() + " ran into heartbeat timeout for leader");
-                    timedOut = true;
                 }
             }
         }

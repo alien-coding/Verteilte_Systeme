@@ -38,5 +38,6 @@ public class Leader extends Thread{
     }
 
     public LinkedList<MessageHandler> getConnections(){return this.connections;}
+    public void setConnections(LinkedList<MessageHandler> connections){this.connections = connections;}
     public Node getParentNode(){return this.parentNode;}
 }

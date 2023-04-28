@@ -24,7 +24,7 @@ public class Node extends Thread{
 
     @Override
     public void run(){
-        // while(true){
+        while(true){
             if(this.role == Role.FOLLOWER){
                 this.run_follower();
             }
@@ -32,10 +32,10 @@ public class Node extends Thread{
                 this.run_leader();
             }
             else if(this.role == Role.UNKNOWN){
-                System.out.println("help what to do now???");
+                System.out.println(this.ip + " help what to do now???");
             }
             Util.sleep(100);
-        // }
+        }
     }
 
 

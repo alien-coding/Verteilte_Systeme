@@ -1,4 +1,5 @@
 package Project.leader;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
@@ -62,9 +63,8 @@ public class LeaderMessageHandler extends MessageHandler {
     //leader has to implement this method by its own cause it is waiting for the ack messages of the clients.
     @Override
     protected void handleAckMessage(Message message){
-        //TODO: implement heartbeat acknowledgement here
+        this.heartbeat.setGotAnswer(true);
     }
-    
 
     private void getInitMessage(){
         Message message = this.readMessage();
@@ -92,6 +92,17 @@ public class LeaderMessageHandler extends MessageHandler {
             this.sendMessage(answer);
             this.getInitMessage(); //give registering node new try to successfully connect
         }
+    }
+
+    public void followerTimedOut(){
+        System.out.println(this.parentLeader.getConnections());
+        try {
+            this.socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        this.parentLeader.getConnections().remove(this);
+        System.out.println(this.parentLeader.getConnections());
     }
 
     public Leader getParentLeader() {return this.parentLeader;}

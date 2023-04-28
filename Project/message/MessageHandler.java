@@ -128,7 +128,7 @@ public abstract class MessageHandler extends Thread{
 
     protected void closeSocket(){
         try {
-            System.out.println("Socket disconnected, closing connection");
+            System.out.println(this.parentNode.getIp() + " lost connection to opponent, closing own socket");
             this.socket.close();
         } catch (IOException e) {
             System.err.println(e.toString());
