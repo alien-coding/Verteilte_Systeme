@@ -1,6 +1,9 @@
+package Project;
+
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import helpers.*;
+import Project.follower.Follower;
+import Project.helpers.*;
+import Project.leader.Leader;
 
 public class Node extends Thread{
     private Role role = Role.UNKNOWN;
@@ -9,7 +12,6 @@ public class Node extends Thread{
     private LocalDateTime lastHeartBeat;
     private TrafficControlLogic logic;
     private String pathForBackUp;
-    private HashMap<String, NodeSaver> allKnownNodes = new HashMap<>();
     //TODO: change way of getting leader 
     public String leader_ip;
     public int leader_port;
@@ -66,10 +68,6 @@ public class Node extends Thread{
             Util.sleep(1);
         }
     }
-
-    public HashMap<String, NodeSaver> getAllKnownNodes (){return this.allKnownNodes;}
-    public void setAllKnownNodes(HashMap<String,NodeSaver> knownNodes){this.allKnownNodes = knownNodes;}
-
 
     public Role getRole() {return this.role;}
     public void setRole(Role role) {this.role = role;}

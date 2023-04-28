@@ -1,7 +1,10 @@
+package Project.follower;
 import java.net.Socket;
 
-import Message.Message;
-import Message.MessageType;
+import Project.Node;
+import Project.message.Message;
+import Project.message.MessageHandler;
+import Project.message.MessageType;
 
 public class FollowerLeaderMessageHandler extends MessageHandler{
 

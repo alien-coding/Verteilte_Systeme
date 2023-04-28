@@ -1,7 +1,10 @@
+package Project.follower;
 import java.io.IOException;
 import java.net.Socket;
 
-import Message.Message;
+import Project.Node;
+import Project.message.Message;
+import Project.message.MessageHandler;
 
 public class FollowerClientMessageHandler extends MessageHandler{
     private Follower parentFollower;

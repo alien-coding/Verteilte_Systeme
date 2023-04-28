@@ -1,5 +1,9 @@
-import Message.Message;
-import Message.MessageType;
+package Project.leader;
+
+import Project.Config;
+import Project.Util;
+import Project.message.Message;
+import Project.message.MessageType;
 
 public class Heartbeat extends Thread {
     private LeaderMessageHandler parentMessageHandler;
@@ -14,7 +18,7 @@ public class Heartbeat extends Thread {
     }
 
     public void run(){
-        while(!this.parentMessageHandler.socket.isClosed()){
+        while(!this.parentMessageHandler.getSocket().isClosed()){
             String sender = this.parentMessageHandler.getParentLeader().getParentNode().getIp();
             String receiver = this.parentMessageHandler.getFollowerIp();
             Message heartbeat = new Message(sender, receiver, "heartbeat", MessageType.HEARTBEAT);

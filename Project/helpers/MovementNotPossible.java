@@ -1,4 +1,4 @@
-package helpers;
+package Project.helpers;
 
 public class MovementNotPossible extends Exception {
     public MovementNotPossible(String message) {

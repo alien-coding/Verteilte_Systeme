@@ -1,7 +1,9 @@
+package Project.leader;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
-import Message.*;
+import Project.Node;
+import Project.message.*;
 
 public class LeaderMessageHandler extends MessageHandler {
     private Heartbeat heartbeat;

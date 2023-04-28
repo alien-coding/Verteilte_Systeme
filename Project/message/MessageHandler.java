@@ -1,7 +1,8 @@
+package Project.message;
+
 import java.io.*;
 import java.net.Socket;
-
-import Message.*;
+import Project.Node;
 
 public abstract class MessageHandler extends Thread{
     protected ObjectInputStream inputStream;
@@ -60,5 +61,7 @@ public abstract class MessageHandler extends Thread{
             System.out.println("Node read initialize failed");
         }        
     }
+
+    public Socket getSocket(){return this.socket;}
 
 }

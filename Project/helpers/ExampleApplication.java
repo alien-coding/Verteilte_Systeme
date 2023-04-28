@@ -1,4 +1,4 @@
-package helpers;
+package Project.helpers;
 import java.util.Random;
 
 /**

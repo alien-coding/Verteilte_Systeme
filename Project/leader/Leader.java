@@ -1,9 +1,13 @@
+package Project.leader;
 
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
+
+import Project.Node;
+import Project.message.MessageHandler;
 
 
 public class Leader extends Thread{

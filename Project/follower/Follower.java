@@ -1,11 +1,13 @@
+package Project.follower;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
 
-import Message.Message;
-import Message.MessageType;
+import Project.Node;
+import Project.message.Message;
+import Project.message.MessageType;
 
 public class Follower extends Thread {
     private Node parentNode;
