@@ -54,9 +54,9 @@ public class Follower extends Thread {
             this.connectionToLeader = new FollowerLeaderMessageHandler(parentNode, leaderSocket);
             // this.connections.add(messageHandler);
 
-            System.out.println(this.parentNode.getIp() + " connected successfully to leader node");
+            System.out.println(this.parentNode.getIp() + " found leader socket");
             InetSocketAddress payload = new InetSocketAddress(this.parentNode.getIp(), this.parentNode.getPort());
-            Message message = new Message(this.parentNode.getIp(), this.parentNode.leader_ip, payload, MessageType.INITIALIZE);
+            Message message = new Message(this.parentNode.getIp(), this.parentNode.getLeaderIp(), payload, MessageType.INITIALIZE);
             Message response = this.connectionToLeader.sendMessageGetResponse(message);
             System.out.println(this.parentNode.getIp() + " received initial leader response: " + response.getPayload());
 
@@ -67,8 +67,9 @@ public class Follower extends Thread {
                 throw new IOException("Init Message from " + this.parentNode.getIp() + " was not answered with Success.");
             }            
         } catch (IOException e) {
-            System.out.println("Connecting to leader failed, self is " + this.parentNode.getIp());
+            System.out.println(this.parentNode.getIp() + ": connecting to leader failed");
             System.err.println(e.toString());
+            //TODO: quit on this point
         }
     }
 

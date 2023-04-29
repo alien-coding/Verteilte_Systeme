@@ -1,4 +1,5 @@
 package Project.leader;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -26,10 +27,16 @@ public class LeaderMessageHandler extends MessageHandler {
     }
 
     public void run(){
-        this.getInitMessage();
-        this.heartbeat.start();
-        while(!this.socket.isClosed()){
-            this.receiveMessagesRoutine();
+        Boolean isRegistered = this.registerClient();
+        if(isRegistered){
+            this.heartbeat.start();
+            this.parentLeader.updatedNodeList(this); //update nodelist when Connection inited and started
+            while(!this.socket.isClosed()){
+                this.receiveMessagesRoutine();
+            }
+        }
+        else{
+            System.out.println("Failed to init client correctly");
         }
     }
 
@@ -66,7 +73,7 @@ public class LeaderMessageHandler extends MessageHandler {
         this.heartbeat.setGotAnswer(true);
     }
 
-    private void getInitMessage(){
+    public Boolean registerClient(){
         Message message = this.readMessage();
         System.out.println(this.parentNode.getIp() + " received a "+ message.getType() + " message: " + message.getPayload());
         if(message.getType() == MessageType.INITIALIZE){
@@ -74,35 +81,34 @@ public class LeaderMessageHandler extends MessageHandler {
                 InetSocketAddress clientAddress = (InetSocketAddress) message.getPayload();
                 this.followerIp = clientAddress.getHostName();
                 this.followerPort = clientAddress.getPort();
-                System.out.println("Leader registered " + this.followerIp);
+                System.out.println(this.parentLeader.getParentNode().getIp() + ": Leader registered " + this.followerIp);
 
                 String payload = "Registered " + this.followerIp + " as Follower.";
                 Message answer = new Message(this.parentNode.getIp(), message.getSender(), payload, MessageType.SUCCESS); 
                 this.sendMessage(answer);
+                return true;
             } catch (Exception e) {
                 System.out.println("Init message failed");
                 String payload = "Insert INetSocketAddress of own IP and Port in payload.";
                 Message answer = new Message(this.parentNode.getIp(), message.getSender(), payload, MessageType.ERROR); 
                 this.sendMessage(answer);
+                return false;
             }
-            
         }
         else{
             Message answer = new Message(this.parentNode.getIp(), message.getSender(), "Please send init Message", MessageType.ERROR);
             this.sendMessage(answer);
-            this.getInitMessage(); //give registering node new try to successfully connect
+            return false;
         }
     }
 
     public void followerTimedOut(){
-        System.out.println(this.parentLeader.getConnections());
         try {
             this.socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
         this.parentLeader.getConnections().remove(this);
-        System.out.println(this.parentLeader.getConnections());
     }
 
     public Leader getParentLeader() {return this.parentLeader;}

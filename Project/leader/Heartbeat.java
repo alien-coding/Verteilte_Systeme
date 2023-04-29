@@ -9,8 +9,6 @@ public class Heartbeat extends Thread {
     private LeaderMessageHandler parentMessageHandler;
     private Boolean gotAnswer;
 
-   
-
     /**
      * 
      * @param leader Leader who is initializing Heartbeat

@@ -7,12 +7,15 @@ import java.net.Socket;
 import java.util.LinkedList;
 
 import Project.Node;
-import Project.message.MessageHandler;
+import Project.NodeSaver;
+import Project.Role;
+import Project.message.Message;
+import Project.message.MessageType;
 
 
 public class Leader extends Thread{
     private Node parentNode;
-    private LinkedList<MessageHandler> connections = new LinkedList<MessageHandler>(); //all accepted connections are added here
+    private LinkedList<LeaderMessageHandler> connections = new LinkedList<LeaderMessageHandler>(); //all accepted connections are added here
 
     public Leader(Node node){
         this.parentNode = node;
@@ -26,7 +29,6 @@ public class Leader extends Thread{
             while(!serverSocket.isClosed()){
                 Socket newConnection = serverSocket.accept();
                 LeaderMessageHandler messageHandler = new LeaderMessageHandler(parentNode, newConnection, this);
-                this.connections.add(messageHandler);
                 messageHandler.start();
             }
             serverSocket.close();
@@ -37,7 +39,21 @@ public class Leader extends Thread{
         }
     }
 
-    public LinkedList<MessageHandler> getConnections(){return this.connections;}
-    public void setConnections(LinkedList<MessageHandler> connections){this.connections = connections;}
+    public void updatedNodeList(LeaderMessageHandler messageHandler){
+        this.connections.add(messageHandler);
+        NodeSaver newFollower = new NodeSaver(Role.FOLLOWER, messageHandler.getFollowerIp(), messageHandler.getFollowerPort());
+        this.parentNode.getAllKnownNodes().put(messageHandler.getFollowerIp(), newFollower);
+        this.sendMessageToAll(this.parentNode.getAllKnownNodes(), MessageType.SYNC_NODE_LIST); 
+    }  
+
+    private void sendMessageToAll(Object payload, MessageType type){
+        for (LeaderMessageHandler connection : this.connections) {
+            Message toSend = new Message(this.parentNode.getIp(), "test", payload, type);
+            connection.sendMessage(toSend);
+        }
+    }
+
+    public LinkedList<LeaderMessageHandler> getConnections(){return this.connections;}
+    public void setConnections(LinkedList<LeaderMessageHandler> connections){this.connections = connections;}
     public Node getParentNode(){return this.parentNode;}
 }

@@ -44,3 +44,10 @@
 -SUCCESS: Every request that has not failed
 -ERROR: If request cannot be handled, Error is returned. Body contains more information
 -ACK: Heartbeat was acknowledged. Special answer to not interfere with other requests that are answered with SUCCESS
+
+## TODOs
+
+Client connections to anywhere
+Dynamic leader searching
+list exchange of all nodes
+Functionality of navigating

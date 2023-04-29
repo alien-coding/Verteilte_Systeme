@@ -1,6 +1,8 @@
 package Project;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+
 import Project.follower.Follower;
 import Project.helpers.*;
 import Project.leader.Leader;
@@ -12,14 +14,18 @@ public class Node extends Thread{
     private LocalDateTime lastHeartBeat;
     private TrafficControlLogic logic;
     private String pathForBackUp;
+    private HashMap<String, NodeSaver> allKnwonNodes = new HashMap<String, NodeSaver>();
+
     //TODO: change way of getting leader 
-    public String leader_ip;
-    public int leader_port;
+    private String leaderIp;
+    private int leaderPort;
+    
     
     public Node(Role role, String ip, int port){
         this.role = role;
         this.ip = ip;
         this.port = port;
+        this.allKnwonNodes.put(this.ip, new NodeSaver(this.role, this.ip, this.port));
     }
 
     @Override
@@ -43,7 +49,7 @@ public class Node extends Thread{
      * When run_follower is called, the leader has to already be figured out.
     */
     private void run_follower(){
-        Follower follower = new Follower(this, this.leader_ip, this.leader_port);
+        Follower follower = new Follower(this, this.leaderIp, this.leaderPort);
         follower.start();
         this.waitForRoleChange(Role.FOLLOWER);
         follower.interrupt();
@@ -54,16 +60,18 @@ public class Node extends Thread{
         leader.start();
         this.waitForRoleChange(Role.LEADER);
         leader.interrupt();
-        //open server socket (in a while)
-        //always check for enough followers (when more than half are not responding go in idle state)
-        //read messages, answer them
-            //whilst doing so, keep data consistent
     }
 
     private void waitForRoleChange(Role designatedRole){
         while(this.role == designatedRole){
             Util.sleep(1);
         }
+    }
+
+    public void setLeader(String leaderIp, int leaderPort){
+        this.leaderIp = leaderIp;
+        this.leaderPort = leaderPort;
+        this.allKnwonNodes.put(leaderIp, new NodeSaver(Role.LEADER, leaderIp, leaderPort));
     }
 
     public Role getRole() {return this.role;}
@@ -78,4 +86,10 @@ public class Node extends Thread{
     public void setLogic(TrafficControlLogic logic) {this.logic = logic;}
     public String getPathForBackUp() {return this.pathForBackUp;}
     public void setPathForBackUp(String pathForBackUp) {this.pathForBackUp = pathForBackUp;}
+    public HashMap<String, NodeSaver> getAllKnownNodes() {return this.allKnwonNodes;}
+    public void setAllKnownNodes(HashMap<String, NodeSaver> allKnwonNodes) {this.allKnwonNodes = allKnwonNodes;}
+    public String getLeaderIp() {return this.leaderIp;}
+    public void setLeaderIp(String leaderIp) {this.leaderIp = leaderIp;}
+    public int getLeaderPort() {return this.leaderPort;}
+    public void setLeaderPort(int leaderPort) {this.leaderPort = leaderPort;}
 }
