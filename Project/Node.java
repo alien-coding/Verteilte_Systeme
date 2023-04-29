@@ -87,7 +87,10 @@ public class Node extends Thread{
     public String getPathForBackUp() {return this.pathForBackUp;}
     public void setPathForBackUp(String pathForBackUp) {this.pathForBackUp = pathForBackUp;}
     public HashMap<String, NodeSaver> getAllKnownNodes() {return this.allKnwonNodes;}
-    public void setAllKnownNodes(HashMap<String, NodeSaver> allKnwonNodes) {this.allKnwonNodes = allKnwonNodes;}
+    public void setAllKnownNodes(HashMap<String, NodeSaver> allKnwonNodes) {
+        this.allKnwonNodes = allKnwonNodes;
+        System.out.println("set all known nodes to " + this.allKnwonNodes);
+    }
     public String getLeaderIp() {return this.leaderIp;}
     public void setLeaderIp(String leaderIp) {this.leaderIp = leaderIp;}
     public int getLeaderPort() {return this.leaderPort;}

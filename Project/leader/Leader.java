@@ -4,12 +4,14 @@ import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import Project.HandleAllNodesSync;
 import Project.Node;
 import Project.NodeSaver;
 import Project.Role;
+import Project.Util;
 
 
 public class Leader extends Thread{
@@ -28,7 +30,23 @@ public class Leader extends Thread{
             while(!serverSocket.isClosed()){
                 Socket newConnection = serverSocket.accept();
                 LeaderMessageHandler messageHandler = new LeaderMessageHandler(parentNode, newConnection, this);
-                messageHandler.start();
+
+                Boolean isRegistered = messageHandler.registerClient();
+                if(isRegistered){
+                    NodeSaver newFollower = new NodeSaver(Role.FOLLOWER, messageHandler.getFollowerIp(), messageHandler.getFollowerPort());
+                    HashMap<String, NodeSaver> updatedNodes = this.parentNode.getAllKnownNodes();
+                    updatedNodes.put(messageHandler.getFollowerIp(), newFollower);
+                    this.parentNode.setAllKnownNodes(updatedNodes);
+                    this.connections.add(messageHandler);
+
+                    Util.sleep(10);
+                    HandleAllNodesSync handleAllNodesSync = new HandleAllNodesSync(this,  this.parentNode.getAllKnownNodes());
+                    handleAllNodesSync.start();
+
+                    messageHandler.start();
+                }
+
+                
                 // this.updatedNodeList(messageHandler);
             }
             serverSocket.close();
@@ -37,15 +55,6 @@ public class Leader extends Thread{
             System.out.println("Opening as a leader failed");
             System.err.println(e.toString());
         }
-    }
-
-    public void updatedNodeList(LeaderMessageHandler messageHandler){
-        this.connections.add(messageHandler);
-        NodeSaver newFollower = new NodeSaver(Role.FOLLOWER, messageHandler.getFollowerIp(), messageHandler.getFollowerPort());
-        this.parentNode.getAllKnownNodes().put(messageHandler.getFollowerIp(), newFollower);
-        
-        HandleAllNodesSync handleAllNodesSync = new HandleAllNodesSync(this);
-        handleAllNodesSync.start();
     }
 
     public LinkedList<LeaderMessageHandler> getConnections(){return this.connections;}

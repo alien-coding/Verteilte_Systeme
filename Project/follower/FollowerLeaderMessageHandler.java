@@ -59,6 +59,7 @@ public class FollowerLeaderMessageHandler extends MessageHandler{
         System.out.println("Sync node list");
         try {
             HashMap<String, NodeSaver> allKnownNodes = (HashMap<String, NodeSaver>) message.getPayload();
+            System.out.println("received " + allKnownNodes);
             if(this.parentNode.getAllKnownNodes().size() <= allKnownNodes.size()){
                 this.parentNode.setAllKnownNodes(allKnownNodes);
                 System.out.println("set new list");

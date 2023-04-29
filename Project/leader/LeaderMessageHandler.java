@@ -27,16 +27,20 @@ public class LeaderMessageHandler extends MessageHandler {
     }
 
     public void run(){
-        Boolean isRegistered = this.registerClient();
-        if(isRegistered){
-            this.parentLeader.updatedNodeList(this);
-            this.heartbeat.start();
-            while(!this.socket.isClosed()){
-                this.receiveMessagesRoutine();
-            }
-        }
-        else{
-            System.out.println("Failed to init client correctly");
+        // Boolean isRegistered = this.registerClient();
+        // if(isRegistered){
+        //     this.parentLeader.updatedNodeList(this);
+        //     this.heartbeat.start();
+        //     while(!this.socket.isClosed()){
+        //         this.receiveMessagesRoutine();
+        //     }
+        // }
+        // else{
+        //     System.out.println("Failed to init client correctly");
+        // }
+        this.heartbeat.start();
+        while(!this.socket.isClosed()){
+            this.receiveMessagesRoutine();
         }
     }
 
