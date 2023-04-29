@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import Project.Node;
 import Project.Role;
+import Project.Util;
 import Project.NodeSaver;
 import Project.message.Message;
 import Project.message.MessageHandler;
@@ -56,18 +57,23 @@ public class FollowerLeaderMessageHandler extends MessageHandler{
     @Override
     protected void handleSyncNodeListMessage(Message message){
         System.out.println("Sync node list");
-        HashMap<String, NodeSaver> allKnownNodes = (HashMap<String, NodeSaver>) message.getPayload();
-        if(this.parentNode.getAllKnownNodes().size() <= allKnownNodes.size()){
-            this.parentNode.setAllKnownNodes(allKnownNodes);
-            System.out.println("set new list");
-            // Message answer = new Message(this.parentNode.getIp(), message.getSender(), "", MessageType.SUCCESS);
-            // this.sendMessage(answer);
+        try {
+            HashMap<String, NodeSaver> allKnownNodes = (HashMap<String, NodeSaver>) message.getPayload();
+            if(this.parentNode.getAllKnownNodes().size() <= allKnownNodes.size()){
+                this.parentNode.setAllKnownNodes(allKnownNodes);
+                System.out.println("set new list");
+                // Message answer = new Message(this.parentNode.getIp(), message.getSender(), "", MessageType.SUCCESS);
+                // this.sendMessage(answer);
+            }
+            else{
+                System.out.println("outdated");
+                // Message answer = new Message(this.parentNode.getIp(), message.getSender(), "New Sync List was outdated", MessageType.ERROR);
+                // this.sendMessage(answer);
+            }
+        } catch (Exception e) {
+            System.err.println(e.toString());
         }
-        else{
-            System.out.println("outdated");
-            // Message answer = new Message(this.parentNode.getIp(), message.getSender(), "New Sync List was outdated", MessageType.ERROR);
-            // this.sendMessage(answer);
-        }
+        
         // System.out.println("Answer not implemented: Sync Node List");
     }
 

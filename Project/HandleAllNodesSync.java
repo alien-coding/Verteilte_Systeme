@@ -13,7 +13,7 @@ public class HandleAllNodesSync extends Thread {
     }
 
     public void run(){
-        Util.sleep(1000);
+        Util.sleep(50);
         for (LeaderMessageHandler connection : this.leader.getConnections()) {
             String sender = this.leader.getParentNode().getIp();
             String receiver = connection.getFollowerIp();

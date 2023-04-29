@@ -10,7 +10,6 @@ import Project.HandleAllNodesSync;
 import Project.Node;
 import Project.NodeSaver;
 import Project.Role;
-import Project.Util;
 
 
 public class Leader extends Thread{
@@ -30,7 +29,7 @@ public class Leader extends Thread{
                 Socket newConnection = serverSocket.accept();
                 LeaderMessageHandler messageHandler = new LeaderMessageHandler(parentNode, newConnection, this);
                 messageHandler.start();
-                this.updatedNodeList(messageHandler);
+                // this.updatedNodeList(messageHandler);
             }
             serverSocket.close();
         }

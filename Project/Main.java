@@ -8,6 +8,8 @@ public class Main {
         node2.setLeader("127.0.0.1", 200);
         node2.start();
 
+        Util.sleep(2000);
+
         Node node3 = new Node(Role.FOLLOWER, "127.0.0.3", 200);
         node3.setLeader("127.0.0.1", 200);
         node3.start();
