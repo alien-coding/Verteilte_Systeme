@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.HashMap;
 
 import Project.Node;
+import Project.NodeSaver;
 import Project.Role;
 import Project.message.Message;
 import Project.message.MessageHandler;
@@ -54,8 +55,19 @@ public class FollowerLeaderMessageHandler extends MessageHandler{
     
     @Override
     protected void handleSyncNodeListMessage(Message message){
-        System.out.println(this.parentNode.getIp() + "s node list: " + this.parentNode.getAllKnownNodes());
-        // System.out.println("Answer not implemented: Sync Node List");
+        try {
+            HashMap<String, NodeSaver> updatedNodeList = (HashMap<String, NodeSaver>) message.getPayload();
+            if(updatedNodeList.size() >= 2){
+                this.parentNode.setAllKnownNodes(updatedNodeList);
+                System.out.println(this.parentNode.getIp() + " updated list of all nodes");
+            }
+            else{
+                System.out.println(this.parentNode.getIp() + " is not setting new Node list. Size smaller than 2");
+            }
+        } catch (Exception e) {
+            System.err.println("Error while setting new node list:");
+            System.err.println(e.toString());
+        }
     }
 
     @Override

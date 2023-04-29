@@ -33,10 +33,8 @@ public abstract class MessageHandler extends Thread{
     public Message sendMessageGetResponse(Message message){
         try {
             this.outputStream.writeObject(message);
-            // this.outputStream.flush();
             Message response = this.readMessage();
             return response;
-
         } catch (EOFException e) {
             this.closeSocket();
             return null;

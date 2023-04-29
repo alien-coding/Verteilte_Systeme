@@ -67,6 +67,7 @@ public class LeaderMessageHandler extends MessageHandler {
 
     @Override
     protected void handleNavigationMessage(Message message){
+        System.out.println("navigation not implemented");
         Message answer = new Message(this.parentNode.getIp(), message.getSender(), "message answer", MessageType.SUCCESS);
         this.sendMessage(answer);
     }

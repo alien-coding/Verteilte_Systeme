@@ -4,9 +4,7 @@ import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 
 import Project.Node;
 import Project.NodeSaver;
@@ -39,17 +37,13 @@ public class Leader extends Thread{
                     NodeSaver newFollower = new NodeSaver(Role.FOLLOWER, messageHandler.getFollowerIp(), messageHandler.getFollowerPort());
                     this.parentNode.addToAllKnownNodes(messageHandler.getFollowerIp(), newFollower);
                     this.connections.add(messageHandler);
-                    System.out.println("Leader added new connection to all known nodes: " + this.parentNode.getAllKnownNodes());
                     
                     Message message = new Message(this.parentNode.getIp(), this.connections.getLast().getFollowerIp(), this.parentNode.getAllKnownNodes().clone(), MessageType.SYNC_NODE_LIST);
-                    Util.sleep(1);
+                    Util.sleep(10);  //so sending message does not happen in exact same time as first heartbeat (triggered by messageHandler.start)
                     for (LeaderMessageHandler connection : connections) {
                         connection.sendMessage(message);
                     }
                 }
-
-                
-                // this.updatedNodeList(messageHandler);
             }
             serverSocket.close();
         }
