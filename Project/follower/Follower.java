@@ -30,7 +30,7 @@ public class Follower extends Thread {
             ServerSocket serverSocket = new ServerSocket();
             InetSocketAddress address = new InetSocketAddress(this.parentNode.getIp(), this.parentNode.getPort());
             serverSocket.bind(address);
-            while(!serverSocket.isClosed()){
+            while(!serverSocket.isClosed() && !this.connectionToLeader.getSocket().isClosed()){
                 Socket newConnection = serverSocket.accept();
                 FollowerClientMessageHandler messageHandler = new FollowerClientMessageHandler(this, parentNode, newConnection);
                 this.connections.add(newConnection);
@@ -59,7 +59,6 @@ public class Follower extends Thread {
             Message message = new Message(this.parentNode.getIp(), this.parentNode.getLeaderIp(), payload, MessageType.INITIALIZE);
             Message response = this.connectionToLeader.sendMessageGetResponse(message);
             System.out.println(this.parentNode.getIp() + " received initial leader response: " + response.getPayload());
-
             if(response.getType() == MessageType.SUCCESS){
                 this.connectionToLeader.start();
             }

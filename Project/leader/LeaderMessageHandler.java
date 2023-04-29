@@ -27,21 +27,11 @@ public class LeaderMessageHandler extends MessageHandler {
     }
 
     public void run(){
-        // Boolean isRegistered = this.registerClient();
-        // if(isRegistered){
-        //     this.parentLeader.updatedNodeList(this);
-        //     this.heartbeat.start();
-        //     while(!this.socket.isClosed()){
-        //         this.receiveMessagesRoutine();
-        //     }
-        // }
-        // else{
-        //     System.out.println("Failed to init client correctly");
-        // }
         this.heartbeat.start();
         while(!this.socket.isClosed()){
             this.receiveMessagesRoutine();
         }
+        this.removeLostFollower();
     }
 
     @Override
@@ -67,6 +57,7 @@ public class LeaderMessageHandler extends MessageHandler {
 
     @Override
     protected void handleNavigationMessage(Message message){
+        System.out.println("navigation not implemented");
         Message answer = new Message(this.parentNode.getIp(), message.getSender(), "message answer", MessageType.SUCCESS);
         this.sendMessage(answer);
     }
@@ -112,7 +103,13 @@ public class LeaderMessageHandler extends MessageHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        this.removeLostFollower();
+    }
+
+    private void removeLostFollower(){
         this.parentLeader.getConnections().remove(this);
+        this.parentLeader.getParentNode().getAllKnownNodes().remove(this.followerIp);
+        this.parentLeader.updateNodeList();
     }
 
     public Leader getParentLeader() {return this.parentLeader;}
