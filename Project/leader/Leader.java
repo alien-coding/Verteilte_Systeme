@@ -31,7 +31,7 @@ public class Leader extends Thread{
                 Socket newConnection = serverSocket.accept();
                 LeaderMessageHandler messageHandler = new LeaderMessageHandler(parentNode, newConnection, this);
 
-                Boolean isRegistered = messageHandler.registerClient();
+                Boolean isRegistered = messageHandler.registerClient(); //wait for init from client
                 if(isRegistered){
                     messageHandler.start();
                     NodeSaver newFollower = new NodeSaver(Role.FOLLOWER, messageHandler.getFollowerIp(), messageHandler.getFollowerPort());
@@ -52,7 +52,7 @@ public class Leader extends Thread{
         Message message = new Message(this.parentNode.getIp(), "", this.parentNode.getAllKnownNodes().clone(), MessageType.SYNC_NODE_LIST);
         Util.sleep(10);  //so sending message does not happen in exact same time as first heartbeat (triggered by messageHandler.start)
         for (LeaderMessageHandler connection : connections) {
-            // message.setReceiver(connection.getFollowerIp());
+            message.setReceiver(connection.getFollowerIp());
             connection.sendMessage(message);
         }
     }

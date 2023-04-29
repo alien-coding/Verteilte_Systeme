@@ -12,6 +12,7 @@ public class Main {
         node3.setLeader("127.0.0.1", 200);
 
         node2.start();
+        Util.sleep(500);
         node3.start();
 
         // Node node4 = new Node(Role.FOLLOWER, "127.0.0.4", 200);
