@@ -6,12 +6,14 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
-import Project.HandleAllNodesSync;
 import Project.Node;
 import Project.NodeSaver;
 import Project.Role;
 import Project.Util;
+import Project.message.Message;
+import Project.message.MessageType;
 
 
 public class Leader extends Thread{
@@ -33,17 +35,17 @@ public class Leader extends Thread{
 
                 Boolean isRegistered = messageHandler.registerClient();
                 if(isRegistered){
-                    NodeSaver newFollower = new NodeSaver(Role.FOLLOWER, messageHandler.getFollowerIp(), messageHandler.getFollowerPort());
-                    HashMap<String, NodeSaver> updatedNodes = this.parentNode.getAllKnownNodes();
-                    updatedNodes.put(messageHandler.getFollowerIp(), newFollower);
-                    this.parentNode.setAllKnownNodes(updatedNodes);
-                    this.connections.add(messageHandler);
-
-                    Util.sleep(10);
-                    HandleAllNodesSync handleAllNodesSync = new HandleAllNodesSync(this,  this.parentNode.getAllKnownNodes());
-                    handleAllNodesSync.start();
-
                     messageHandler.start();
+                    NodeSaver newFollower = new NodeSaver(Role.FOLLOWER, messageHandler.getFollowerIp(), messageHandler.getFollowerPort());
+                    this.parentNode.addToAllKnownNodes(messageHandler.getFollowerIp(), newFollower);
+                    this.connections.add(messageHandler);
+                    System.out.println("Leader added new connection to all known nodes: " + this.parentNode.getAllKnownNodes());
+                    
+                    Message message = new Message(this.parentNode.getIp(), this.connections.getLast().getFollowerIp(), this.parentNode.getAllKnownNodes().clone(), MessageType.SYNC_NODE_LIST);
+                    Util.sleep(1);
+                    for (LeaderMessageHandler connection : connections) {
+                        connection.sendMessage(message);
+                    }
                 }
 
                 

@@ -21,9 +21,11 @@ public abstract class MessageHandler extends Thread{
             Message received = (Message) this.inputStream.readObject();
             return received;
         } catch (EOFException e) {
+            System.err.println(e.toString());
             this.closeSocket();
             return null;
         } catch (Exception e){
+            System.err.println(e.toString());
             return null;
         }
     }

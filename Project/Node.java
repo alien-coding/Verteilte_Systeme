@@ -14,7 +14,7 @@ public class Node extends Thread{
     private LocalDateTime lastHeartBeat;
     private TrafficControlLogic logic;
     private String pathForBackUp;
-    private HashMap<String, NodeSaver> allKnwonNodes = new HashMap<String, NodeSaver>();
+    private HashMap<String, NodeSaver> allKnownNodes = new HashMap<String, NodeSaver>();
 
     //TODO: change way of getting leader 
     private String leaderIp;
@@ -25,7 +25,7 @@ public class Node extends Thread{
         this.role = role;
         this.ip = ip;
         this.port = port;
-        this.allKnwonNodes.put(this.ip, new NodeSaver(this.role, this.ip, this.port));
+        this.allKnownNodes.put(this.ip, new NodeSaver(this.role, this.ip, this.port));
     }
 
     @Override
@@ -71,7 +71,7 @@ public class Node extends Thread{
     public void setLeader(String leaderIp, int leaderPort){
         this.leaderIp = leaderIp;
         this.leaderPort = leaderPort;
-        this.allKnwonNodes.put(leaderIp, new NodeSaver(Role.LEADER, leaderIp, leaderPort));
+        this.allKnownNodes.put(leaderIp, new NodeSaver(Role.LEADER, leaderIp, leaderPort));
     }
 
     public Role getRole() {return this.role;}
@@ -86,11 +86,9 @@ public class Node extends Thread{
     public void setLogic(TrafficControlLogic logic) {this.logic = logic;}
     public String getPathForBackUp() {return this.pathForBackUp;}
     public void setPathForBackUp(String pathForBackUp) {this.pathForBackUp = pathForBackUp;}
-    public HashMap<String, NodeSaver> getAllKnownNodes() {return this.allKnwonNodes;}
-    public void setAllKnownNodes(HashMap<String, NodeSaver> allKnwonNodes) {
-        this.allKnwonNodes = allKnwonNodes;
-        System.out.println("set all known nodes to " + this.allKnwonNodes);
-    }
+    public HashMap<String, NodeSaver> getAllKnownNodes() {return this.allKnownNodes;}
+    public void setAllKnownNodes(HashMap<String, NodeSaver> allKnownNodes) {this.allKnownNodes = allKnownNodes;}
+    public void addToAllKnownNodes(String key, NodeSaver toAdd){this.allKnownNodes.put(key, toAdd);}
     public String getLeaderIp() {return this.leaderIp;}
     public void setLeaderIp(String leaderIp) {this.leaderIp = leaderIp;}
     public int getLeaderPort() {return this.leaderPort;}
