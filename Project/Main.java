@@ -14,14 +14,15 @@ public class Main {
         node2.start();
         node3.start();
 
-        Node node4 = new Node(Role.FOLLOWER, "127.0.0.4", 200);
-        node4.setLeader("127.0.0.1", 200);
-        node4.start();
+        // Node node4 = new Node(Role.FOLLOWER, "127.0.0.4", 200);
+        // node4.setLeader("127.0.0.1", 200);
+        // node4.start();
 
         Util.sleep(5000);
 
         node3.setRole(Role.UNKNOWN);
-
+        Util.sleep(1000);
+        node2.setRole(Role.UNKNOWN);
         // Util.sleep(1);
 
         // node1.setRole(Role.FOLLOWER);
