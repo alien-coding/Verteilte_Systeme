@@ -30,7 +30,7 @@ public class Follower extends Thread {
             ServerSocket serverSocket = new ServerSocket();
             InetSocketAddress address = new InetSocketAddress(this.parentNode.getIp(), this.parentNode.getPort());
             serverSocket.bind(address);
-            while(!serverSocket.isClosed()){
+            while(!serverSocket.isClosed() && !this.connectionToLeader.getSocket().isClosed()){
                 Socket newConnection = serverSocket.accept();
                 FollowerClientMessageHandler messageHandler = new FollowerClientMessageHandler(this, parentNode, newConnection);
                 this.connections.add(newConnection);

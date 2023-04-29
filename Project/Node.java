@@ -1,5 +1,6 @@
 package Project;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 
@@ -52,6 +53,11 @@ public class Node extends Thread{
         Follower follower = new Follower(this, this.leaderIp, this.leaderPort);
         follower.start();
         this.waitForRoleChange(Role.FOLLOWER);
+        try {
+            follower.getConnectionToLeader().getSocket().close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         follower.interrupt();
     }
 

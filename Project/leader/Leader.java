@@ -37,12 +37,6 @@ public class Leader extends Thread{
                     NodeSaver newFollower = new NodeSaver(Role.FOLLOWER, messageHandler.getFollowerIp(), messageHandler.getFollowerPort());
                     this.parentNode.addToAllKnownNodes(messageHandler.getFollowerIp(), newFollower);
                     this.connections.add(messageHandler);
-                    
-                    Message message = new Message(this.parentNode.getIp(), this.connections.getLast().getFollowerIp(), this.parentNode.getAllKnownNodes().clone(), MessageType.SYNC_NODE_LIST);
-                    Util.sleep(10);  //so sending message does not happen in exact same time as first heartbeat (triggered by messageHandler.start)
-                    for (LeaderMessageHandler connection : connections) {
-                        connection.sendMessage(message);
-                    }
                 }
             }
             serverSocket.close();
@@ -50,6 +44,14 @@ public class Leader extends Thread{
         catch (IOException e){
             System.out.println("Opening as a leader failed");
             System.err.println(e.toString());
+        }
+    }
+
+    public void updateNodeList(){
+        Message message = new Message(this.parentNode.getIp(), this.connections.getLast().getFollowerIp(), this.parentNode.getAllKnownNodes().clone(), MessageType.SYNC_NODE_LIST);
+        Util.sleep(10);  //so sending message does not happen in exact same time as first heartbeat (triggered by messageHandler.start)
+        for (LeaderMessageHandler connection : connections) {
+            connection.sendMessage(message);
         }
     }
 
