@@ -6,11 +6,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
 
+import Project.HandleAllNodesSync;
 import Project.Node;
 import Project.NodeSaver;
 import Project.Role;
-import Project.message.Message;
-import Project.message.MessageType;
+import Project.Util;
 
 
 public class Leader extends Thread{
@@ -30,6 +30,7 @@ public class Leader extends Thread{
                 Socket newConnection = serverSocket.accept();
                 LeaderMessageHandler messageHandler = new LeaderMessageHandler(parentNode, newConnection, this);
                 messageHandler.start();
+                this.updatedNodeList(messageHandler);
             }
             serverSocket.close();
         }
@@ -43,14 +44,9 @@ public class Leader extends Thread{
         this.connections.add(messageHandler);
         NodeSaver newFollower = new NodeSaver(Role.FOLLOWER, messageHandler.getFollowerIp(), messageHandler.getFollowerPort());
         this.parentNode.getAllKnownNodes().put(messageHandler.getFollowerIp(), newFollower);
-        this.sendMessageToAll(this.parentNode.getAllKnownNodes(), MessageType.SYNC_NODE_LIST); 
-    }  
-
-    private void sendMessageToAll(Object payload, MessageType type){
-        for (LeaderMessageHandler connection : this.connections) {
-            Message toSend = new Message(this.parentNode.getIp(), "test", payload, type);
-            connection.sendMessage(toSend);
-        }
+        
+        HandleAllNodesSync handleAllNodesSync = new HandleAllNodesSync(this);
+        handleAllNodesSync.start();
     }
 
     public LinkedList<LeaderMessageHandler> getConnections(){return this.connections;}

@@ -30,7 +30,6 @@ public class LeaderMessageHandler extends MessageHandler {
         Boolean isRegistered = this.registerClient();
         if(isRegistered){
             this.heartbeat.start();
-            this.parentLeader.updatedNodeList(this); //update nodelist when Connection inited and started
             while(!this.socket.isClosed()){
                 this.receiveMessagesRoutine();
             }
