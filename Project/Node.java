@@ -1,12 +1,12 @@
-package Project;
+package project;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 
-import Project.follower.Follower;
-import Project.helpers.*;
-import Project.leader.Leader;
+import project.follower.Follower;
+import project.helpers.*;
+import project.leader.Leader;
 
 public class Node extends Thread{
     private Role role = Role.UNKNOWN;

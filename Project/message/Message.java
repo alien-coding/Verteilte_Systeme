@@ -1,4 +1,4 @@
-package Project.message;
+package project.message;
 import java.io.Serializable;
 import java.time.Instant;
 

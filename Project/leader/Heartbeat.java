@@ -1,9 +1,9 @@
-package Project.leader;
+package project.leader;
 
-import Project.Config;
-import Project.Util;
-import Project.message.Message;
-import Project.message.MessageType;
+import project.Config;
+import project.Util;
+import project.message.Message;
+import project.message.MessageType;
 
 public class Heartbeat extends Thread {
     private LeaderMessageHandler parentMessageHandler;

@@ -1,4 +1,4 @@
-package Project.leader;
+package project.leader;
 
 import java.io.*;
 import java.net.InetSocketAddress;
@@ -6,17 +6,15 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
 
-import Project.Node;
-import Project.NodeSaver;
-import Project.Role;
-import Project.Util;
-import Project.message.Message;
-import Project.message.MessageType;
+import project.Node;
+import project.Util;
+import project.message.Message;
+import project.message.MessageType;
 
 
 public class Leader extends Thread{
     private Node parentNode;
-    private LinkedList<LeaderMessageHandler> connections = new LinkedList<LeaderMessageHandler>(); //all accepted connections are added here
+    private LinkedList<LeaderMessageHandler> nodeConnections = new LinkedList<LeaderMessageHandler>(); //all accepted connections are added here
 
     public Leader(Node node){
         this.parentNode = node;
@@ -31,13 +29,9 @@ public class Leader extends Thread{
                 Socket newConnection = serverSocket.accept();
                 LeaderMessageHandler messageHandler = new LeaderMessageHandler(parentNode, newConnection, this);
 
-                Boolean isRegistered = messageHandler.registerClient(); //wait for init from client
+                Boolean isRegistered = messageHandler.registerConnection(); //wait for init from new Node or follower
                 if(isRegistered){
                     messageHandler.start();
-                    NodeSaver newFollower = new NodeSaver(Role.FOLLOWER, messageHandler.getFollowerIp(), messageHandler.getFollowerPort());
-                    this.parentNode.addToAllKnownNodes(messageHandler.getFollowerIp(), newFollower);
-                    this.connections.add(messageHandler);
-                    this.updateNodeList();
                 }
             }
             serverSocket.close();
@@ -51,13 +45,13 @@ public class Leader extends Thread{
     public void updateNodeList(){
         Message message = new Message(this.parentNode.getIp(), "", this.parentNode.getAllKnownNodes().clone(), MessageType.SYNC_NODE_LIST);
         Util.sleep(10);  //so sending message does not happen in exact same time as first heartbeat (triggered by messageHandler.start)
-        for (LeaderMessageHandler connection : connections) {
+        for (LeaderMessageHandler connection : nodeConnections) {
             message.setReceiver(connection.getFollowerIp());
             connection.sendMessage(message);
         }
     }
 
-    public LinkedList<LeaderMessageHandler> getConnections(){return this.connections;}
-    public void setConnections(LinkedList<LeaderMessageHandler> connections){this.connections = connections;}
+    public LinkedList<LeaderMessageHandler> getNodeConnections(){return this.nodeConnections;}
+    public void setNodeConnections(LinkedList<LeaderMessageHandler> connections){this.nodeConnections = connections;}
     public Node getParentNode(){return this.parentNode;}
 }

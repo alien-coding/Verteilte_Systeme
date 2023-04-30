@@ -1,4 +1,4 @@
-package Project.helpers;
+package project.helpers;
 /**
  * the logic that can control the traffic in the area
  * */

@@ -1,18 +1,31 @@
-package Project.message;
+package project.message;
 
 import java.io.*;
 import java.net.Socket;
-import Project.Node;
+
+import project.Node;
 
 public abstract class MessageHandler extends Thread{
     protected ObjectInputStream inputStream;
     protected ObjectOutputStream outputStream;
     protected Socket socket;
     protected Node parentNode;
+    protected String ip;
+    protected int port;
 
     public MessageHandler(Node parentNode, Socket newConnection){
         this.parentNode = parentNode;
         this.socket = newConnection;
+        this.ip = parentNode.getIp();
+        this.port = parentNode.getPort();
+        this.initializeStreams(newConnection);
+    }
+
+    public MessageHandler(Socket newConnection, String ipAddress, int port){
+        this.parentNode = null;
+        this.socket = newConnection;
+        this.ip = ipAddress;
+        this.port = port;
         this.initializeStreams(newConnection);
     }
 
@@ -57,7 +70,7 @@ public abstract class MessageHandler extends Thread{
     protected void receiveMessagesRoutine(){
         try {
             Message message = this.readMessage();
-            System.out.println(this.parentNode.getIp() + " received a " + message.getType().toString() + " message: " + message.getPayload());
+            System.out.println(this.ip + " received a " + message.getType().toString() + " message: " + message.getPayload());
             switch (message.getType()) {
                 case INITIALIZE:
                     this.handleInitializeMessage(message);
@@ -97,17 +110,17 @@ public abstract class MessageHandler extends Thread{
     //that is waiting for an answer (when using sendMessageGetResponse), not by the receivingMessages Routine
 
     protected void handleSuccessMessage(Message message){
-        Message answer = new Message(this.parentNode.getIp(), message.getSender(), "Please do not send answer codes as request.", MessageType.ERROR);
+        Message answer = new Message(this.ip, message.getSender(), "Please do not send answer codes as request.", MessageType.ERROR);
         this.sendMessage(answer);
     }
 
     protected void handleErrorMessage(Message message){
-        Message answer = new Message(this.parentNode.getIp(), message.getSender(), "Please do not send answer codes as request.", MessageType.ERROR);
+        Message answer = new Message(this.ip, message.getSender(), "Please do not send answer codes as request.", MessageType.ERROR);
         this.sendMessage(answer);
     }
 
     protected void handleAckMessage(Message message){
-        Message answer = new Message(this.parentNode.getIp(), message.getSender(), "Please do not send answer codes as request.", MessageType.ERROR);
+        Message answer = new Message(this.ip, message.getSender(), "Please do not send answer codes as request.", MessageType.ERROR);
         this.sendMessage(answer);
     }
 
@@ -129,7 +142,7 @@ public abstract class MessageHandler extends Thread{
 
     protected void closeSocket(){
         try {
-            System.out.println(this.parentNode.getIp() + " lost connection to opponent, closing own socket");
+            System.out.println(this.ip + " lost connection to opponent, closing own socket");
             this.socket.close();
         } catch (IOException e) {
             System.err.println(e.toString());

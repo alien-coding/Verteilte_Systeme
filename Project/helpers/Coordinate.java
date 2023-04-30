@@ -1,4 +1,4 @@
-package Project.helpers;
+package project.helpers;
 /**
  * simple coordinate class used
  * */

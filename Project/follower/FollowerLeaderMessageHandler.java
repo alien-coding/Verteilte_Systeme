@@ -1,14 +1,14 @@
-package Project.follower;
+package project.follower;
 import java.net.Socket;
 import java.time.Instant;
 import java.util.HashMap;
 
-import Project.Node;
-import Project.NodeSaver;
-import Project.Role;
-import Project.message.Message;
-import Project.message.MessageHandler;
-import Project.message.MessageType;
+import project.Node;
+import project.NodeSaver;
+import project.Role;
+import project.message.Message;
+import project.message.MessageHandler;
+import project.message.MessageType;
 
 public class FollowerLeaderMessageHandler extends MessageHandler{
     private Instant lastHeartbeat;

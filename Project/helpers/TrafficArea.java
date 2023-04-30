@@ -1,4 +1,4 @@
-package Project.helpers;
+package project.helpers;
 /**
  * represents the area to be controlled by the traffic control system
  * */

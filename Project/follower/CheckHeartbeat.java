@@ -1,9 +1,9 @@
-package Project.follower;
+package project.follower;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
-import Project.Config;
+import project.Config;
 
 public class CheckHeartbeat extends Thread {
     private FollowerLeaderMessageHandler parentMessageHandler;

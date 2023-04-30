@@ -1,17 +1,20 @@
-package Project.leader;
+package project.leader;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
-import Project.Node;
-import Project.message.*;
+import project.Role;
+import project.Node;
+import project.NodeSaver;
+import project.message.*;
 
 public class LeaderMessageHandler extends MessageHandler {
     private Heartbeat heartbeat;
     private Leader parentLeader;
     private String followerIp;
     private int followerPort;
+    private Boolean isClient;
 
     /**
      * Initializes input and output streams on creation, since every Message handler is 
@@ -27,7 +30,9 @@ public class LeaderMessageHandler extends MessageHandler {
     }
 
     public void run(){
-        this.heartbeat.start();
+        if(!this.isClient){
+            this.heartbeat.start();
+        }
         while(!this.socket.isClosed()){
             this.receiveMessagesRoutine();
         }
@@ -68,7 +73,7 @@ public class LeaderMessageHandler extends MessageHandler {
         this.heartbeat.setGotAnswer(true);
     }
 
-    public Boolean registerClient(){
+    public Boolean registerConnection(){
         Message message = this.readMessage();
         System.out.println(this.parentNode.getIp() + " received a "+ message.getType() + " message: " + message.getPayload());
         if(message.getType() == MessageType.INITIALIZE){
@@ -78,10 +83,26 @@ public class LeaderMessageHandler extends MessageHandler {
                 this.followerPort = clientAddress.getPort();
                 System.out.println(this.parentLeader.getParentNode().getIp() + ": Leader registered " + this.followerIp);
 
-                String payload = "Registered " + this.followerIp + " as Follower.";
-                Message answer = new Message(this.parentNode.getIp(), message.getSender(), payload, MessageType.SUCCESS); 
-                this.sendMessage(answer);
+                if(this.followerIp.contains("127.0.0.")){
+                    String payload = "Registered " + this.followerIp + " as Follower";
+                    Message answer = new Message(this.parentNode.getIp(), message.getSender(), payload, MessageType.SUCCESS); 
+                    this.sendMessage(answer);
+                    
+                    this.isClient = false;
+                    NodeSaver newFollower = new NodeSaver(Role.FOLLOWER, this.getFollowerIp(), this.getFollowerPort());
+                    this.parentLeader.getParentNode().addToAllKnownNodes(this.getFollowerIp(), newFollower);
+                    this.parentLeader.getNodeConnections().add(this);
+                    this.parentLeader.updateNodeList();
+                }
+                else if(this.followerIp.contains("127.0.1.")){
+                    this.isClient = true;
+                    String payload = "Registered " + this.followerIp + " as Client";
+                    Message answer = new Message(this.parentNode.getIp(), message.getSender(), payload, MessageType.SUCCESS); 
+                    this.sendMessage(answer);
+                }
+                
                 return true;
+
             } catch (Exception e) {
                 System.out.println("Init message failed");
                 String payload = "Insert INetSocketAddress of own IP and Port in payload.";
@@ -107,7 +128,7 @@ public class LeaderMessageHandler extends MessageHandler {
     }
 
     private void removeLostFollower(){
-        this.parentLeader.getConnections().remove(this);
+        this.parentLeader.getNodeConnections().remove(this);
         this.parentLeader.getParentNode().getAllKnownNodes().remove(this.followerIp);
         this.parentLeader.updateNodeList();
     }

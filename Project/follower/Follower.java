@@ -1,13 +1,13 @@
-package Project.follower;
+package project.follower;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
 
-import Project.Node;
-import Project.message.Message;
-import Project.message.MessageType;
+import project.Node;
+import project.message.Message;
+import project.message.MessageType;
 
 public class Follower extends Thread {
     private Node parentNode;
@@ -68,6 +68,11 @@ public class Follower extends Thread {
         } catch (IOException e) {
             System.out.println(this.parentNode.getIp() + ": connecting to leader failed");
             System.err.println(e.toString());
+            try {
+                this.connectionToLeader.getSocket().close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
             //TODO: quit on this point
         }
     }
