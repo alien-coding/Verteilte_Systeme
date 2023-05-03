@@ -47,7 +47,6 @@
 
 ## TODOs
 
-Client connections to anywhere (relativ fix)
 Dynamic leader searching
 Functionality of navigating
     + save navigation stuff persistent

@@ -39,7 +39,7 @@ public class Node extends Thread{
                 this.run_leader();
             }
             else if(this.role == Role.UNKNOWN){
-                System.out.println(this.ip + " help what to do now???");
+                this.figureOutNewLeader();
             }
             Util.sleep(100);
         }
@@ -74,9 +74,18 @@ public class Node extends Thread{
         }
     }
 
+    private void figureOutNewLeader(){
+        
+    }
+
     public void setLeader(String leaderIp, int leaderPort){
         this.leaderIp = leaderIp;
         this.leaderPort = leaderPort;
+        for(HashMap.Entry<String, NodeSaver> entry : this.allKnownNodes.entrySet()){
+            if(entry.getValue().getRole() == Role.LEADER){
+                entry.getValue().setRole(Role.FOLLOWER); //TODO wtf mach ich hier
+            }
+        }
         this.allKnownNodes.put(leaderIp, new NodeSaver(Role.LEADER, leaderIp, leaderPort));
     }
 
