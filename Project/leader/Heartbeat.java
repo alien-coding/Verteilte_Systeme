@@ -6,7 +6,7 @@ import project.message.Message;
 import project.message.MessageType;
 
 public class Heartbeat extends Thread {
-    private LeaderMessageHandler parentMessageHandler;
+    private LeaderFollowerMessageHandler parentMessageHandler;
     private Boolean gotAnswer;
 
     /**
@@ -14,7 +14,7 @@ public class Heartbeat extends Thread {
      * @param leader Leader who is initializing Heartbeat
      * @param HEARTBEAT_INTERVAL in s
      */
-    public Heartbeat(LeaderMessageHandler parentMessageHandler){
+    public Heartbeat(LeaderFollowerMessageHandler parentMessageHandler){
         this.parentMessageHandler = parentMessageHandler;
         this.gotAnswer = true; //so Heartbeat is sent initially (Object only created when init is completed)
     }

@@ -1,11 +1,6 @@
 package project.leader;
 
-import java.io.*;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.LinkedList;
-
 import project.Node;
 import project.Util;
 import project.message.Message;
@@ -13,45 +8,35 @@ import project.message.MessageType;
 
 
 public class Leader extends Thread{
+    private String addressForClients;
+    private int portForClients;
+      
     private Node parentNode;
-    private LinkedList<LeaderMessageHandler> nodeConnections = new LinkedList<LeaderMessageHandler>(); //all accepted connections are added here
+    private LinkedList<LeaderFollowerMessageHandler> nodeConnections = new LinkedList<LeaderFollowerMessageHandler>(); //all accepted connections are added here
 
     public Leader(Node node){
         this.parentNode = node;
     }
 
     public void run(){
-        try{
-            ServerSocket serverSocket = new ServerSocket();
-            InetSocketAddress address = new InetSocketAddress(this.parentNode.getIp(), this.parentNode.getPort());
-            serverSocket.bind(address);
-            while(!serverSocket.isClosed()){
-                Socket newConnection = serverSocket.accept();
-                LeaderMessageHandler messageHandler = new LeaderMessageHandler(parentNode, newConnection, this);
-
-                Boolean isRegistered = messageHandler.registerConnection(); //wait for init from new Node or follower
-                if(isRegistered){
-                    messageHandler.start();
-                }
-            }
-            serverSocket.close();
-        }
-        catch (IOException e){
-            System.out.println("Opening as a leader failed");
-            System.err.println(e.toString());
-        }
+        ClientRoutine clientRoutine = new ClientRoutine(this);
+        FollowerRoutine followerRoutine = new FollowerRoutine(this);
+        clientRoutine.start();
+        followerRoutine.start();
     }
 
     public void updateNodeList(){
         Message message = new Message(this.parentNode.getIp(), "", this.parentNode.getAllKnownNodes().clone(), MessageType.SYNC_NODE_LIST);
         Util.sleep(10);  //so sending message does not happen in exact same time as first heartbeat (triggered by messageHandler.start)
-        for (LeaderMessageHandler connection : nodeConnections) {
+        for (LeaderFollowerMessageHandler connection : nodeConnections) {
             message.setReceiver(connection.getFollowerIp());
             connection.sendMessage(message);
         }
     }
 
-    public LinkedList<LeaderMessageHandler> getNodeConnections(){return this.nodeConnections;}
-    public void setNodeConnections(LinkedList<LeaderMessageHandler> connections){this.nodeConnections = connections;}
+    public LinkedList<LeaderFollowerMessageHandler> getNodeConnections(){return this.nodeConnections;}
+    public void setNodeConnections(LinkedList<LeaderFollowerMessageHandler> connections){this.nodeConnections = connections;}
     public Node getParentNode(){return this.parentNode;}
+    public String getAddressForClients() {return this.addressForClients;}
+    public int getPortForClients() {return this.portForClients;}
 }

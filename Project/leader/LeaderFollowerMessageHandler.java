@@ -9,7 +9,7 @@ import project.Node;
 import project.NodeSaver;
 import project.message.*;
 
-public class LeaderMessageHandler extends MessageHandler {
+public class LeaderFollowerMessageHandler extends MessageHandler {
     private Heartbeat heartbeat;
     private Leader parentLeader;
     private String followerIp;
@@ -23,7 +23,7 @@ public class LeaderMessageHandler extends MessageHandler {
      * @param parentNode node which is parent of this process, necessary for handling messages
      * @param newConnection the new connection that has been accepted and has to be initialized
      */
-    public LeaderMessageHandler(Node parentNode, Socket newConnection, Leader parentLeader){
+    public LeaderFollowerMessageHandler(Node parentNode, Socket newConnection, Leader parentLeader){
         super(parentNode, newConnection);
         this.parentLeader = parentLeader;
         this.heartbeat = new Heartbeat(this);
@@ -89,7 +89,7 @@ public class LeaderMessageHandler extends MessageHandler {
                     this.sendMessage(answer);
                     
                     this.isClient = false;
-                    NodeSaver newFollower = new NodeSaver(Role.FOLLOWER, this.getFollowerIp(), this.getFollowerPort());
+                    NodeSaver newFollower = new NodeSaver(Role.FOLLOWER, this.followerIp, this.followerPort);
                     this.parentLeader.getParentNode().addToAllKnownNodes(this.getFollowerIp(), newFollower);
                     this.parentLeader.getNodeConnections().add(this);
                     this.parentLeader.updateNodeList();
