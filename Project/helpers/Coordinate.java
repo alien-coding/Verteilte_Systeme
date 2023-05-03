@@ -1,8 +1,11 @@
 package project.helpers;
+
+import java.io.Serializable;
+
 /**
  * simple coordinate class used
  * */
-public class Coordinate {
+public class Coordinate implements Serializable {
     short x = -1;
     short y = -1;
 

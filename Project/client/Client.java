@@ -3,6 +3,8 @@ package project.client;
 import java.io.IOException;
 import java.net.Socket;
 
+import project.Util;
+import project.helpers.Coordinate;
 import project.message.Message;
 import project.message.MessageType;
 
@@ -25,8 +27,17 @@ public class Client extends Thread{
             Socket entryPointSocket = new Socket(this.entryPointIp, this.entryPointPort); 
             this.messageHandler = new ClientNodeMessageHandler(entryPointSocket, this.ip, this.port, this);
             this.messageHandler.start();
-            this.messageHandler.sendMessage(new Message("", "", "test", MessageType.NAVIGATION));
-            
+            Coordinate[] payload = new Coordinate[2];
+            payload[0] = new Coordinate((short) 1, (short) 1);
+            payload[1] = new Coordinate((short) 3, (short) 3);
+
+            this.messageHandler.sendMessage(new Message(this.ip, this.entryPointIp, payload, MessageType.NAVIGATION));
+            while(this.messageHandler.getLastAnswer() == null){
+                Util.sleep(2);
+                System.out.println("pending");
+            }
+            Coordinate nextStep = (Coordinate) this.messageHandler.getLastAnswer();
+            System.out.println("Next Step: x: " + nextStep.getX() + " y: " + nextStep.getY());
         } catch (IOException e) {
             System.out.println(this.ip + ": connecting to leader failed");
             System.err.println(e.toString());

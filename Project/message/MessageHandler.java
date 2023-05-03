@@ -49,6 +49,7 @@ public abstract class MessageHandler extends Thread{
             Message response = this.readMessage();
             return response;
         } catch (EOFException e) {
+            System.err.println(e.toString());
             this.closeSocket();
             return null;
         } catch (Exception e) {
@@ -97,7 +98,7 @@ public abstract class MessageHandler extends Thread{
                     break;
             }
         } catch (Exception e) {
-            // System.err.println(e.toString());
+            System.err.println(e.toString());
         }
     }
 

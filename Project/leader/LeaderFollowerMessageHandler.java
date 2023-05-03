@@ -14,7 +14,6 @@ public class LeaderFollowerMessageHandler extends MessageHandler {
     private Leader parentLeader;
     private String followerIp;
     private int followerPort;
-    private Boolean isClient;
 
     /**
      * Initializes input and output streams on creation, since every Message handler is 
@@ -30,9 +29,7 @@ public class LeaderFollowerMessageHandler extends MessageHandler {
     }
 
     public void run(){
-        if(!this.isClient){
-            this.heartbeat.start();
-        }
+        this.heartbeat.start();
         while(!this.socket.isClosed()){
             this.receiveMessagesRoutine();
         }
@@ -88,7 +85,6 @@ public class LeaderFollowerMessageHandler extends MessageHandler {
                     Message answer = new Message(this.parentNode.getIp(), message.getSender(), payload, MessageType.SUCCESS); 
                     this.sendMessage(answer);
                     
-                    this.isClient = false;
                     NodeSaver newFollower = new NodeSaver(Role.FOLLOWER, this.followerIp, this.followerPort);
                     this.parentLeader.getParentNode().addToAllKnownNodes(this.getFollowerIp(), newFollower);
                     this.parentLeader.getNodeConnections().add(this);

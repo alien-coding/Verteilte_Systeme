@@ -14,7 +14,7 @@ public class Main {
         node3.setLeader("127.0.0.1", 200);
 
         node2.start();
-        Util.sleep(500);
+        // Util.sleep(500);
         node3.start();
         Util.sleep(1000);
 

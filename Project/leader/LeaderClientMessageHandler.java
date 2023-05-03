@@ -22,6 +22,12 @@ public class LeaderClientMessageHandler extends MessageHandler {
         this.uniqueId = UUID.randomUUID().toString();
     }
 
+    public void run(){
+        while(!this.socket.isClosed()){
+            this.receiveMessagesRoutine();
+        }
+    }
+
     @Override
     protected void handleInitializeMessage(Message message) {
         System.out.println("noch net fertig");
@@ -41,7 +47,20 @@ public class LeaderClientMessageHandler extends MessageHandler {
     protected void handleNavigationMessage(Message message) {
         try {
             Coordinate[] payload = (Coordinate[]) message.getPayload();
-            this.getParentLeader().getParentNode().getArea().place(this.uniqueId, payload[0]);
+            try {
+                if(payload.length == 2){
+                    this.parentNode.getArea().place(this.uniqueId, payload[0]);
+                    Coordinate nextStep = this.parentNode.getLogic().move(this.uniqueId, payload[1]);
+                    Message answer = new Message(this.parentNode.getIp(), this.clientIp, nextStep, MessageType.SUCCESS); 
+                    this.sendMessage(answer);
+                }
+                else{
+                    System.out.println("Payload not containing all information");
+                }
+            } catch (Exception e) {
+                System.err.println("Move not possible: " + e.toString());
+            }
+            
         } catch (Exception e) {
             System.err.println(e.toString());
         }

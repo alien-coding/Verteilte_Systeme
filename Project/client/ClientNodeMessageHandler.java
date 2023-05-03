@@ -8,6 +8,7 @@ import project.message.MessageType;
 
 public class ClientNodeMessageHandler extends MessageHandler{
     private Client parentClient;
+    private Object lastAnswer;
 
     public ClientNodeMessageHandler(Socket socket, String  ip, int port, Client parenClient){
         super(socket, ip, port);
@@ -44,7 +45,8 @@ public class ClientNodeMessageHandler extends MessageHandler{
 
     @Override
     protected void handleSuccessMessage(Message message) {
-        System.out.println("Unimplemented method 'handleNavigationMessage'");
+        this.lastAnswer = message.getPayload();
+        System.out.println("Saved last message");
     }
 
     @Override
@@ -70,4 +72,7 @@ public class ClientNodeMessageHandler extends MessageHandler{
             System.out.println("Init Message from " + this.ip + " was not answered with Success.");
         }            
     }
+
+    public Object getLastAnswer() {return this.lastAnswer;}
+    public void setLastAnswer(Object lastAnswer) {this.lastAnswer = lastAnswer;}
 }
