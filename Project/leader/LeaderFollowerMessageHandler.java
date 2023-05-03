@@ -83,24 +83,16 @@ public class LeaderFollowerMessageHandler extends MessageHandler {
                 this.followerPort = clientAddress.getPort();
                 System.out.println(this.parentLeader.getParentNode().getIp() + ": Leader registered " + this.followerIp);
 
-                if(this.followerIp.contains("127.0.0.")){
-                    String payload = "Registered " + this.followerIp + " as Follower";
-                    Message answer = new Message(this.parentNode.getIp(), message.getSender(), payload, MessageType.SUCCESS); 
-                    this.sendMessage(answer);
-                    
-                    this.isClient = false;
-                    NodeSaver newFollower = new NodeSaver(Role.FOLLOWER, this.followerIp, this.followerPort);
-                    this.parentLeader.getParentNode().addToAllKnownNodes(this.getFollowerIp(), newFollower);
-                    this.parentLeader.getNodeConnections().add(this);
-                    this.parentLeader.updateNodeList();
-                }
-                else if(this.followerIp.contains("127.0.1.")){
-                    this.isClient = true;
-                    String payload = "Registered " + this.followerIp + " as Client";
-                    Message answer = new Message(this.parentNode.getIp(), message.getSender(), payload, MessageType.SUCCESS); 
-                    this.sendMessage(answer);
-                }
                 
+                String payload = "Registered " + this.followerIp + " as Follower";
+                Message answer = new Message(this.parentNode.getIp(), message.getSender(), payload, MessageType.SUCCESS); 
+                this.sendMessage(answer);
+                
+                this.isClient = false;
+                NodeSaver newFollower = new NodeSaver(Role.FOLLOWER, this.followerIp, this.followerPort);
+                this.parentLeader.getParentNode().addToAllKnownNodes(this.getFollowerIp(), newFollower);
+                this.parentLeader.getNodeConnections().add(this);
+                this.parentLeader.updateNodeList();
                 return true;
 
             } catch (Exception e) {

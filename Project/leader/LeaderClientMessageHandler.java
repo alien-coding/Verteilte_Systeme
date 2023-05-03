@@ -4,8 +4,6 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 
 import project.Node;
-import project.NodeSaver;
-import project.Role;
 import project.message.Message;
 import project.message.MessageHandler;
 import project.message.MessageType;
@@ -50,24 +48,9 @@ public class LeaderClientMessageHandler extends MessageHandler {
                 this.clientPort = clientAddress.getPort();
                 System.out.println(this.parentLeader.getParentNode().getIp() + ": Leader registered " + this.clientIp);
 
-                if(this.clientIp.contains("127.0.0.")){
-                    String payload = "Registered " + this.clientIp + " as Follower";
-                    Message answer = new Message(this.parentNode.getIp(), message.getSender(), payload, MessageType.SUCCESS); 
-                    this.sendMessage(answer);
-                    
-                    this.isClient = false;
-                    NodeSaver newFollower = new NodeSaver(Role.FOLLOWER, this.clientIp, this.clientPort);
-                    this.parentLeader.getParentNode().addToAllKnownNodes(this.clientIp, newFollower);
-                    this.parentLeader.getNodeConnections().add(this);
-                    this.parentLeader.updateNodeList();
-                }
-                else if(this.clientIp.contains("127.0.1.")){
-                    this.isClient = true;
-                    String payload = "Registered " + this.clientIp + " as Client";
-                    Message answer = new Message(this.parentNode.getIp(), message.getSender(), payload, MessageType.SUCCESS); 
-                    this.sendMessage(answer);
-                }
-                
+                String payload = "Registered " + this.clientIp + " as Client";
+                Message answer = new Message(this.parentNode.getIp(), message.getSender(), payload, MessageType.SUCCESS); 
+                this.sendMessage(answer);
                 return true;
 
             } catch (Exception e) {
@@ -84,4 +67,11 @@ public class LeaderClientMessageHandler extends MessageHandler {
             return false;
         }
     }
+    
+    public Leader getParentLeader() {return this.parentLeader;}
+    public void setParentLeader(Leader parentLeader) {this.parentLeader = parentLeader;}
+    public String getClientIp() {return this.clientIp;}
+    public void setClientIp(String clientIp) {this.clientIp = clientIp;}
+    public int getClientPort() {return this.clientPort;}
+    public void setClientPort(int clientPort) {this.clientPort = clientPort;}
 }

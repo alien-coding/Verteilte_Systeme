@@ -62,7 +62,7 @@ public class Node extends Thread{
     }
 
     private void run_leader() {
-        Leader leader = new Leader(this);
+        Leader leader = new Leader(this, this.ip, 201);
         leader.start();
         this.waitForRoleChange(Role.LEADER);
         leader.interrupt();

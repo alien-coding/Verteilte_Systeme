@@ -14,8 +14,10 @@ public class Leader extends Thread{
     private Node parentNode;
     private LinkedList<LeaderFollowerMessageHandler> nodeConnections = new LinkedList<LeaderFollowerMessageHandler>(); //all accepted connections are added here
 
-    public Leader(Node node){
+    public Leader(Node node, String addressForClients, int portForClients){
         this.parentNode = node;
+        this.addressForClients = addressForClients;
+        this.portForClients = portForClients;
     }
 
     public void run(){
