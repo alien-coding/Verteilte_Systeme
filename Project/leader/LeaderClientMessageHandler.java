@@ -46,12 +46,23 @@ public class LeaderClientMessageHandler extends MessageHandler {
                 InetSocketAddress clientAddress = (InetSocketAddress) message.getPayload();
                 this.clientIp = clientAddress.getHostName();
                 this.clientPort = clientAddress.getPort();
-                System.out.println(this.parentLeader.getParentNode().getIp() + ": Leader registered " + this.clientIp);
 
-                String payload = "Registered " + this.clientIp + " as Client";
-                Message answer = new Message(this.parentNode.getIp(), message.getSender(), payload, MessageType.SUCCESS); 
-                this.sendMessage(answer);
-                return true;
+                if(this.clientIp.contains("127.0.1.")){
+                    System.out.println(this.parentLeader.getParentNode().getIp() + ": Leader registered " + this.clientIp);
+
+                    String payload = "Registered " + this.clientIp + " as Client";
+                    Message answer = new Message(this.parentNode.getIp(), message.getSender(), payload, MessageType.SUCCESS); 
+                    this.sendMessage(answer);
+                    return true;
+                }
+                else {
+                    System.out.println(this.parentLeader.getParentNode().getIp() + ": Leader rejected " + this.clientIp);
+                    String payload = "Please connect to " + this.parentLeader.getParentNode().getIp() + ":";
+                    payload += this.parentLeader.getParentNode().getPort() + " for network functionality";
+                    Message answer = new Message(this.parentNode.getIp(), message.getSender(), payload, MessageType.ERROR); 
+                    this.sendMessage(answer);
+                    return false;
+                }
 
             } catch (Exception e) {
                 System.out.println("Init message failed");
@@ -67,7 +78,7 @@ public class LeaderClientMessageHandler extends MessageHandler {
             return false;
         }
     }
-    
+
     public Leader getParentLeader() {return this.parentLeader;}
     public void setParentLeader(Leader parentLeader) {this.parentLeader = parentLeader;}
     public String getClientIp() {return this.clientIp;}

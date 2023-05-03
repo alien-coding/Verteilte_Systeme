@@ -81,19 +81,29 @@ public class LeaderFollowerMessageHandler extends MessageHandler {
                 InetSocketAddress clientAddress = (InetSocketAddress) message.getPayload();
                 this.followerIp = clientAddress.getHostName();
                 this.followerPort = clientAddress.getPort();
-                System.out.println(this.parentLeader.getParentNode().getIp() + ": Leader registered " + this.followerIp);
 
+                if(this.followerIp.contains("127.0.0.")){
+                    System.out.println(this.parentLeader.getParentNode().getIp() + ": Leader registered " + this.followerIp);                
+                    String payload = "Registered " + this.followerIp + " as Follower";
+                    Message answer = new Message(this.parentNode.getIp(), message.getSender(), payload, MessageType.SUCCESS); 
+                    this.sendMessage(answer);
+                    
+                    this.isClient = false;
+                    NodeSaver newFollower = new NodeSaver(Role.FOLLOWER, this.followerIp, this.followerPort);
+                    this.parentLeader.getParentNode().addToAllKnownNodes(this.getFollowerIp(), newFollower);
+                    this.parentLeader.getNodeConnections().add(this);
+                    this.parentLeader.updateNodeList();
+                    return true;
+                }
+                else {
+                    System.out.println(this.parentLeader.getParentNode().getIp() + ": Leader rejected " + this.followerIp);
+                    String payload = "Please connect to " + this.parentLeader.getAddressForClients() + ":";
+                    payload += this.parentLeader.getPortForClients() + " for client functionality";
+                    Message answer = new Message(this.parentNode.getIp(), message.getSender(), payload, MessageType.ERROR); 
+                    this.sendMessage(answer);
+                    return false;
+                }
                 
-                String payload = "Registered " + this.followerIp + " as Follower";
-                Message answer = new Message(this.parentNode.getIp(), message.getSender(), payload, MessageType.SUCCESS); 
-                this.sendMessage(answer);
-                
-                this.isClient = false;
-                NodeSaver newFollower = new NodeSaver(Role.FOLLOWER, this.followerIp, this.followerPort);
-                this.parentLeader.getParentNode().addToAllKnownNodes(this.getFollowerIp(), newFollower);
-                this.parentLeader.getNodeConnections().add(this);
-                this.parentLeader.updateNodeList();
-                return true;
 
             } catch (Exception e) {
                 System.out.println("Init message failed");

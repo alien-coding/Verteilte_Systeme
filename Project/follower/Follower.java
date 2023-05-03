@@ -56,9 +56,11 @@ public class Follower extends Thread {
 
             System.out.println(this.parentNode.getIp() + " found leader socket");
             InetSocketAddress payload = new InetSocketAddress(this.parentNode.getIp(), this.parentNode.getPort());
+            
             Message message = new Message(this.parentNode.getIp(), this.parentNode.getLeaderIp(), payload, MessageType.INITIALIZE);
             Message response = this.connectionToLeader.sendMessageGetResponse(message);
             System.out.println(this.parentNode.getIp() + " received initial leader response: " + response.getPayload());
+
             if(response.getType() == MessageType.SUCCESS){
                 this.connectionToLeader.start();
             }

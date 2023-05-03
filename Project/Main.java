@@ -17,9 +17,10 @@ public class Main {
         Util.sleep(500);
         node3.start();
         Util.sleep(1000);
+
         Client client1 = new Client("127.0.1.1", 200);
-        client1.setEntryPointIp("127.0.0.2");
-        client1.setEntryPointPort(200);
+        client1.setEntryPointIp("127.0.0.1");
+        client1.setEntryPointPort(201);
         client1.start();
 
         // Node node4 = new Node(Role.FOLLOWER, "127.0.0.4", 200);
