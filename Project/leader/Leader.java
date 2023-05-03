@@ -3,6 +3,8 @@ package project.leader;
 import java.util.LinkedList;
 import project.Node;
 import project.Util;
+import project.helpers.TrafficArea;
+import project.helpers.TrafficControlLogic;
 import project.message.Message;
 import project.message.MessageType;
 
@@ -18,6 +20,9 @@ public class Leader extends Thread{
         this.parentNode = node;
         this.addressForClients = addressForClients;
         this.portForClients = portForClients;
+        TrafficArea area = new TrafficArea((short) 2, (short) 10, (short) 10);
+        this.parentNode.setArea(area);
+        this.parentNode.setLogic(new TrafficControlLogic(area));
     }
 
     public void run(){

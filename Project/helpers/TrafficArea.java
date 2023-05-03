@@ -3,9 +3,9 @@ package project.helpers;
  * represents the area to be controlled by the traffic control system
  * */
 public class TrafficArea {
-    private static final short NO_ID = -1;
+    private static final String NO_ID = "-1";
     // current Area
-    private short[][][] area;
+    private String[][][] area;
 
     /**
      * initialises this area with sizes
@@ -16,7 +16,7 @@ public class TrafficArea {
     public TrafficArea(short maxPerNode, short maxSizeX, short maxSizeY)
     {
         // max definitions
-        area = new short[maxSizeX][maxSizeY][maxPerNode];
+        area = new String[maxSizeX][maxSizeY][maxPerNode];
         // init the area
         clear();
     }
@@ -28,7 +28,7 @@ public class TrafficArea {
      * @throws MovementNotPossible
      * @throws ArrayIndexOutOfBoundsException
      * */
-    public void remove(short id, Coordinate from) throws MovementNotPossible, ArrayIndexOutOfBoundsException
+    public void remove(String id, Coordinate from) throws MovementNotPossible, ArrayIndexOutOfBoundsException
     {
         boolean idFoundAndRemoved = false;
         for (int i = 0; i < area[from.getX()][from.getY()].length; i++) {
@@ -50,11 +50,11 @@ public class TrafficArea {
      * @throws MovementNotPossible
      * @throws ArrayIndexOutOfBoundsException
      * */
-    public void place(short id, Coordinate to) throws MovementNotPossible, ArrayIndexOutOfBoundsException
+    public void place(String id, Coordinate to) throws MovementNotPossible, ArrayIndexOutOfBoundsException
     {
         int freePos = -1;
         for (int i = 0; i < area[to.getX()][to.getY()].length; i++) {
-            if (area[to.getX()][to.getY()][i]==-1)
+            if (area[to.getX()][to.getY()][i]=="-1")
             {
                 freePos = i;
                 // id may be placed, if not yet set there
@@ -73,7 +73,7 @@ public class TrafficArea {
      * @param id the client id to search fpr
      * @return the coordinate or null if id not found
      * */
-    public Coordinate getPosition(short id) {
+    public Coordinate getPosition(String id) {
         for (short x = 0; x < area.length; x++) {
             for (short y = 0; y < area[x].length; y++) {
                 for (short clientIDPos = 0; clientIDPos < area[x][y].length; clientIDPos++) {
@@ -103,13 +103,13 @@ public class TrafficArea {
     /*
     * GETTER AND SETTER to update the area directly
     * */
-    public short[][][] getArea() {
+    public String[][][] getArea() {
         synchronized (this) {
             return area;
         }
     }
 
-    public void setArea(short[][][] area) {
+    public void setArea(String[][][] area) {
         synchronized (this)
         {
             this.area = area;

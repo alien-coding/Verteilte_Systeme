@@ -2,8 +2,10 @@ package project.leader;
 
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.UUID;
 
 import project.Node;
+import project.helpers.Coordinate;
 import project.message.Message;
 import project.message.MessageHandler;
 import project.message.MessageType;
@@ -12,10 +14,12 @@ public class LeaderClientMessageHandler extends MessageHandler {
     private Leader parentLeader;
     private String clientIp;
     private int clientPort;
+    private String uniqueId;
 
     public LeaderClientMessageHandler(Node parentNode, Socket newConnection, Leader parentLeader){
         super(parentNode, newConnection);
         this.parentLeader = parentLeader;
+        this.uniqueId = UUID.randomUUID().toString();
     }
 
     @Override
@@ -35,7 +39,12 @@ public class LeaderClientMessageHandler extends MessageHandler {
 
     @Override
     protected void handleNavigationMessage(Message message) {
-        System.out.println("noch net fertig");
+        try {
+            Coordinate[] payload = (Coordinate[]) message.getPayload();
+            this.getParentLeader().getParentNode().getArea().place(this.uniqueId, payload[0]);
+        } catch (Exception e) {
+            System.err.println(e.toString());
+        }
     }
 
     public Boolean registerConnection(){

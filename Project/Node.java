@@ -13,7 +13,9 @@ public class Node extends Thread{
     private String ip;
     private int port;
     private LocalDateTime lastHeartBeat;
+    private TrafficArea area;
     private TrafficControlLogic logic;
+
     private String pathForBackUp;
     private HashMap<String, NodeSaver> allKnownNodes = new HashMap<String, NodeSaver>();
 
@@ -75,7 +77,7 @@ public class Node extends Thread{
     }
 
     private void figureOutNewLeader(){
-        
+
     }
 
     public void setLeader(String leaderIp, int leaderPort){
@@ -108,4 +110,6 @@ public class Node extends Thread{
     public void setLeaderIp(String leaderIp) {this.leaderIp = leaderIp;}
     public int getLeaderPort() {return this.leaderPort;}
     public void setLeaderPort(int leaderPort) {this.leaderPort = leaderPort;}
+    public TrafficArea getArea() {return this.area;}
+    public void setArea(TrafficArea area) {this.area = area;}
 }

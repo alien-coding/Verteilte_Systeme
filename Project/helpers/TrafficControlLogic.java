@@ -20,7 +20,7 @@ public class TrafficControlLogic {
      * @return the starting position
      * @throws MovementNotPossible
      * */
-    public Coordinate start(short id) throws MovementNotPossible
+    public Coordinate start(String id) throws MovementNotPossible
     {
         Coordinate currentPosition = trafficArea.getPosition(id);
         if (currentPosition==null)
@@ -48,7 +48,7 @@ public class TrafficControlLogic {
      * @throws MovementNotPossible
      * @throws ArrayIndexOutOfBoundsException
      * */
-    public Coordinate move(short id, Coordinate targetToReach) throws MovementNotPossible, ArrayIndexOutOfBoundsException
+    public Coordinate move(String id, Coordinate targetToReach) throws MovementNotPossible, ArrayIndexOutOfBoundsException
     {
         // get the current position of the client
         Coordinate currentPosition = trafficArea.getPosition(id);
