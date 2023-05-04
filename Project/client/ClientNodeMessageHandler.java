@@ -9,6 +9,7 @@ import project.message.MessageType;
 public class ClientNodeMessageHandler extends MessageHandler{
     private Client parentClient;
     private Object lastAnswer;
+    private Boolean isInited = false;
 
     public ClientNodeMessageHandler(Socket socket, String  ip, int port, Client parenClient){
         super(socket, ip, port);
@@ -22,7 +23,6 @@ public class ClientNodeMessageHandler extends MessageHandler{
         }
     }
 
-    
     @Override
     protected void handleInitializeMessage(Message message) {
         System.out.println("Unimplemented method 'handleInitializeMessage'");
@@ -67,6 +67,7 @@ public class ClientNodeMessageHandler extends MessageHandler{
         
         if(response.getType() == MessageType.SUCCESS){
             System.out.println(this.ip + " received initial leader response: " + response.getPayload() + ". Connection established");
+            this.isInited = true;
         }
         else{
             System.out.println("Init Message from " + this.ip + " was not answered with Success.");
@@ -77,4 +78,5 @@ public class ClientNodeMessageHandler extends MessageHandler{
         return this.lastAnswer;
     }
     public void setLastAnswer(Object lastAnswer) {this.lastAnswer = lastAnswer;}
+    public Boolean getIsInited() {return this.isInited;}
 }

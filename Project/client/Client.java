@@ -32,7 +32,12 @@ public class Client extends Thread{
             Socket entryPointSocket = new Socket(this.entryPointIp, this.entryPointPort); 
             this.messageHandler = new ClientNodeMessageHandler(entryPointSocket, this.ip, this.port, this);
             this.messageHandler.start();
-            
+            while(this.messageHandler.getIsInited() == false){
+                Util.sleep(100);
+            }
+            Util.sleep(500);
+            this.startNavigation();
+
         } catch (IOException e) {
             System.out.println(this.ip + ": connecting to leader failed");
             System.err.println(e.toString());
@@ -40,7 +45,7 @@ public class Client extends Thread{
     }
 
     public void startNavigation(){
-        while((this.destination.getX() != this.position.getX()) && (this.destination.getY() != this.position.getY())){
+        while(!this.destination.compare(this.position)){
             Coordinate[] payload = new Coordinate[2];
             payload[0] = this.position;
             payload[1] = this.destination;
@@ -55,6 +60,7 @@ public class Client extends Thread{
             this.position = nextStep;
             // Util.sleep(10);
         }
+        System.out.println(this.ip + " reached its destination, quit connection");
         try {
             this.messageHandler.getSocket().close();
         } catch (IOException e) {

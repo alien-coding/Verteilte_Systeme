@@ -53,8 +53,6 @@ public class Main {
                         client.setEntryPointIp(entrypointIpAddress);
                         client.setEntryPointPort(entrypointPort);
                         client.start();
-                        Util.sleep(100);
-                        client.startNavigation();
                     }
                 }
             }

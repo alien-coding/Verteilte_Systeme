@@ -58,6 +58,9 @@ public class LeaderClientMessageHandler extends MessageHandler {
                     if(!nextStep.compare(payload[0])){
                         Message answer = new Message(this.parentNode.getIp(), message.getSender(), nextStep, MessageType.SUCCESS); 
                         this.sendMessage(answer);
+                        if(nextStep.compare(payload[1])){
+                            this.parentNode.getArea().remove(message.getSender(), nextStep);
+                        }
                     }
                     else{
                         Message answer = new Message(this.parentNode.getIp(), message.getSender(), "Can't make move to next field", MessageType.ERROR); 

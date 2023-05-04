@@ -1,5 +1,7 @@
 package project;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.LinkedList;
 
 import project.client.Client;
@@ -24,9 +26,11 @@ public class TestManyClients {
 
         LinkedList<Client> allClients = new LinkedList<>();
 
+        Instant start = Instant.now();
+        
         for (int i = 0; i < 100; i++) {
             String ownIpAddress = "127.0.1." + (i+1);
-            Client client = new Client(ownIpAddress, 200, new Coordinate((short) 1, (short) 1), new Coordinate((short) 50, (short) 50));
+            Client client = new Client(ownIpAddress, 200, new Coordinate((short) 1, (short) (10+i)), new Coordinate((short) 50, (short) (5+i)));
             String entryPoint = "127.0.0." + (i%3+1);
             // System.out.println(entryPoint + " <- synth stuff");
 
@@ -34,11 +38,17 @@ public class TestManyClients {
             client.setEntryPointPort(201);
             allClients.add(i, client);
             client.start();
-            Util.sleep(50);
+            Util.sleep(30);
         }
-
-        for (Client client : allClients) {
-            client.startNavigation();
-        }
+                
+        // for (Client client : allClients) {
+        //     client.startNavigation();
+        // }
+        
+        Instant end = Instant.now();
+        System.out.println(".........................Time needed (in s): " + Duration.between(start, end));
+        // node1.setRole(Role.UNKNOWN);
+        // node3.setRole(Role.UNKNOWN);
+        // node2.setRole(Role.UNKNOWN);
     }
 }
