@@ -73,6 +73,8 @@ public class ClientNodeMessageHandler extends MessageHandler{
         }            
     }
 
-    public Object getLastAnswer() {return this.lastAnswer;}
+    public Object getLastAnswer() {
+        return this.lastAnswer;
+    }
     public void setLastAnswer(Object lastAnswer) {this.lastAnswer = lastAnswer;}
 }

@@ -21,4 +21,13 @@ public class Coordinate implements Serializable {
     public short getY() {
         return y;
     }
+
+    public Boolean compare(Coordinate coordinate){
+        if((this.x == coordinate.getX()) && (this.y == coordinate.getY())){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 }

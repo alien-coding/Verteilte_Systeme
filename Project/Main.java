@@ -1,6 +1,7 @@
 package project;
 
 import project.client.Client;
+import project.helpers.Coordinate;
 
 public class Main {
     public static void main(String[] args) {
@@ -18,7 +19,7 @@ public class Main {
         node3.start();
         Util.sleep(5000);
 
-        Client client1 = new Client("127.0.1.1", 200);
+        Client client1 = new Client("127.0.1.1", 200, new Coordinate((short) 1, (short) 1), new Coordinate((short) 99, (short) 99));
         client1.setEntryPointIp("127.0.0.2");
         client1.setEntryPointPort(200);
         client1.start();

@@ -15,8 +15,8 @@ public class Follower extends Thread {
     private int leaderPort;
 
     private FollowerLeaderMessageHandler connectionToLeader;
-
     private LinkedList<Socket> connections = new LinkedList<Socket>(); //all accepted connections are added here
+    private LinkedList<FollowerClientMessageHandler> clientConnections = new LinkedList<FollowerClientMessageHandler>(); //all accepted connections are added here
     
     public Follower(Node parentNode, String leaderIp, int leaderPort){
         this.parentNode = parentNode;
@@ -33,6 +33,7 @@ public class Follower extends Thread {
             while(!serverSocket.isClosed() && !this.connectionToLeader.getSocket().isClosed()){
                 Socket newConnection = serverSocket.accept();
                 FollowerClientMessageHandler messageHandler = new FollowerClientMessageHandler(this, parentNode, newConnection);
+                this.clientConnections.add(messageHandler);
                 this.connections.add(newConnection);
                 messageHandler.start();
             }
@@ -51,7 +52,7 @@ public class Follower extends Thread {
     private void initLeaderConnection(){
         try {
             Socket leaderSocket = new Socket(this.leaderIp, this.leaderPort);
-            this.connectionToLeader = new FollowerLeaderMessageHandler(parentNode, leaderSocket);
+            this.connectionToLeader = new FollowerLeaderMessageHandler(this, parentNode, leaderSocket);
             // this.connections.add(messageHandler);
 
             System.out.println(this.parentNode.getIp() + " found leader socket");
@@ -81,4 +82,5 @@ public class Follower extends Thread {
 
     public FollowerLeaderMessageHandler getConnectionToLeader() {return this.connectionToLeader;}
     public void setConnectionToLeader(FollowerLeaderMessageHandler connectionToLeader) {this.connectionToLeader = connectionToLeader;}
+    public LinkedList<FollowerClientMessageHandler> getClientConnections() {return this.clientConnections;}
 }

@@ -13,14 +13,16 @@ import project.message.MessageType;
 public class FollowerLeaderMessageHandler extends MessageHandler{
     private Instant lastHeartbeat;
     private CheckHeartbeat checker;
+    private Follower parentFollower;
 
     /**
      * Executed by follower, handles connection with leader
      * @param parentNode
      * @param newConnection
      */
-    public FollowerLeaderMessageHandler(Node parentNode, Socket newConnection){
+    public FollowerLeaderMessageHandler(Follower parentFollower, Node parentNode, Socket newConnection){
         super(parentNode, newConnection);
+        this.parentFollower = parentFollower;
         this.checker = new CheckHeartbeat(this);
     }
 
@@ -30,6 +32,52 @@ public class FollowerLeaderMessageHandler extends MessageHandler{
             this.receiveMessagesRoutine();
         }
         this.getParentNode().setRole(Role.UNKNOWN); //When leader socket shuts down, init the system again
+    }
+
+    @Override
+    protected void receiveMessagesRoutine(){
+        try {
+            Message message = this.readMessage();
+            System.out.println(this.ip + " received a " + message.getType().toString() + " message: " + message.getPayload());
+            if(this.parentNode.getIp().equals(message.getReceiver())){
+                switch (message.getType()) {
+                    case INITIALIZE:
+                        this.handleInitializeMessage(message);
+                        break;
+                    case HEARTBEAT:
+                        this.handleHeartbeatMessage(message);
+                        break;
+                    case SYNC_NODE_LIST:
+                        this.handleSyncNodeListMessage(message);
+                        break;   
+                    case NAVIGATION:
+                        this.handleNavigationMessage(message);
+                        break;
+                    case SUCCESS:
+                        this.handleSuccessMessage(message);
+                        break;
+                    case ERROR:
+                        this.handleErrorMessage(message);
+                        break;
+                    case ACK:
+                        this.handleAckMessage(message);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else{
+                for (FollowerClientMessageHandler messageHandler : this.parentFollower.getClientConnections()) {
+                    if(messageHandler.getClientIp().equals((message.getReceiver()))){
+                        messageHandler.sendMessage(message);
+                        System.out.println(this.parentNode.getIp() + " forwarded message " + message.getPayload() + " to " + messageHandler.getClientIp());
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println(e.toString());
+        }
     }
 
     public void leaderTimedOut(){

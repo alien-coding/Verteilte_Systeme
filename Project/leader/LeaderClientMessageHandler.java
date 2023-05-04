@@ -2,7 +2,6 @@ package project.leader;
 
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.UUID;
 
 import project.Node;
 import project.helpers.Coordinate;
@@ -42,23 +41,33 @@ public class LeaderClientMessageHandler extends MessageHandler {
     }
 
     @Override
-    protected void handleNavigationMessage(Message message) {
+    protected void handleNavigationMessage(Message message){
         try {
             Coordinate[] payload = (Coordinate[]) message.getPayload();
             try {
                 if(payload.length == 2){
-                    this.parentNode.getArea().place(message.getSender(), payload[0]);
+                    if(this.parentNode.getArea().getPosition(message.getSender()) == null){
+                        this.parentNode.getArea().place(message.getSender(), payload[0]);
+                    }
+                    if(!this.parentNode.getArea().getPosition(message.getSender()).compare(payload[0])){
+                        this.parentNode.getArea().remove(message.getSender(), this.parentNode.getArea().getPosition(message.getSender()));
+                        this.parentNode.getArea().place(message.getSender(), payload[0]);
+                    }
+                    
                     Coordinate nextStep = this.parentNode.getLogic().move(message.getSender(), payload[1]);
-                    Message answer = new Message(this.parentNode.getIp(), this.clientIp, nextStep, MessageType.SUCCESS); 
+                    Message answer = new Message(this.parentNode.getIp(), message.getSender(), nextStep, MessageType.SUCCESS); 
                     this.sendMessage(answer);
                 }
                 else{
                     System.out.println("Payload not containing all information");
+                    Message answer = new Message(this.parentNode.getIp(), message.getSender(), "Please send navigation message with Array of 0: your position and 1: your destination", MessageType.ERROR); 
+                    this.sendMessage(answer);
                 }
             } catch (Exception e) {
                 System.err.println("Move not possible: " + e.toString());
+                Message answer = new Message(this.parentNode.getIp(), message.getSender(), "Move is not possible", MessageType.ERROR); 
+                this.sendMessage(answer);
             }
-            
         } catch (Exception e) {
             System.err.println(e.toString());
         }

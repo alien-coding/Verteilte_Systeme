@@ -42,8 +42,7 @@ public class FollowerClientMessageHandler extends MessageHandler{
 
     @Override
     protected void handleNavigationMessage(Message message){
-        Message answer = (Message) this.parentFollower.getConnectionToLeader().sendMessageGetResponse(message);
-        this.sendMessage(answer);
+        this.parentFollower.getConnectionToLeader().sendMessage(message);
     }
 
     public Boolean registerConnection(){

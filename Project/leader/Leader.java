@@ -1,6 +1,8 @@
 package project.leader;
 
 import java.util.LinkedList;
+
+import project.Config;
 import project.Node;
 import project.Util;
 import project.helpers.TrafficArea;
@@ -20,7 +22,7 @@ public class Leader extends Thread{
         this.parentNode = node;
         this.addressForClients = addressForClients;
         this.portForClients = portForClients;
-        TrafficArea area = new TrafficArea((short) 2, (short) 10, (short) 10);
+        TrafficArea area = new TrafficArea(Config.MAX_PER_NODE, Config.SIZE_X, Config.SIZE_Y);
         this.parentNode.setArea(area);
         this.parentNode.setLogic(new TrafficControlLogic(area));
     }

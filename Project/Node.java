@@ -77,7 +77,7 @@ public class Node extends Thread{
     }
 
     private void figureOutNewLeader(){
-
+        
     }
 
     public void setLeader(String leaderIp, int leaderPort){
