@@ -5,14 +5,20 @@ import project.Util;
 import project.message.Message;
 import project.message.MessageType;
 
+/**
+ * Heartbeat handles the sending heartbeat functionality and therefore is only used by the leader.
+ * It is based on the already existing connection from the LeaderFollowerMessageHandler.
+ * For every Leader-Follower connection, one Heartbeat object is created and run.
+ * When only one Message is not answered with an acknowledge, the connection is interrupted and the follower is forgotten.
+ */
 public class Heartbeat extends Thread {
     private LeaderFollowerMessageHandler parentMessageHandler;
     private Boolean gotAnswer;
 
     /**
-     * 
-     * @param leader Leader who is initializing Heartbeat
-     * @param HEARTBEAT_INTERVAL in s
+     * Heartbeat sender is always coupled to a LeaderFollowerMessageHandler. 
+     * This is to use the already existing connection between these two nodes.
+     * @param parentMessageHandler
      */
     public Heartbeat(LeaderFollowerMessageHandler parentMessageHandler){
         this.parentMessageHandler = parentMessageHandler;

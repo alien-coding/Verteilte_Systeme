@@ -5,10 +5,12 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-
+/**
+ * Runs the Leader routine of accepting clients.
+ * Therefore opens server socket and starts for every connection a LeaderClientMessageHandler.* 
+ */
 public class ClientRoutine extends Thread {
     private Leader parentLeader;
-
 
     public ClientRoutine(Leader leader){
         this.parentLeader = leader;
@@ -24,7 +26,7 @@ public class ClientRoutine extends Thread {
                 Socket newConnection = serverSocket.accept();
                 LeaderClientMessageHandler messageHandler = new LeaderClientMessageHandler(this.parentLeader.getParentNode(), newConnection, this.parentLeader);
 
-                Boolean isRegistered = messageHandler.registerConnection(); //wait for init from new Node or follower
+                Boolean isRegistered = messageHandler.registerConnection(); //wait for init from new client
                 if(isRegistered){
                     messageHandler.start();
                 }

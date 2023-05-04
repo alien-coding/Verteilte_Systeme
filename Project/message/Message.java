@@ -13,7 +13,7 @@ public class Message implements Serializable {
     private MessageType type;
     
     /**
-     * 
+     * Checks message creation for null values.
      * @param sender own ip address so message can be answered
      * @param receiver destination ip address 
      * @param payload content of message, objects class must be Serializable 

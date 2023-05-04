@@ -37,14 +37,19 @@ public class LeaderFollowerMessageHandler extends MessageHandler {
         this.removeLostFollower();
     }
 
+    /**
+     * Initializing is implemented in registerConnection.
+     * Every other initialize message is an error case.
+     */
     @Override
     protected void handleInitializeMessage(Message message){
-        //TODO change answer because init is handled elsewhere
-        Message answer = new Message(this.parentNode.getIp(), message.getSender(), "message answer", MessageType.SUCCESS);
-        this.sendMessage(answer);
+       System.out.println("answer not implemented");
     }
     
-    //If leader receives Heartbeat Message, something has gone wrong. It should only receive ACK answers to its own Heartbeat messages.
+    /**
+     * If leader receives Heartbeat Message, something has gone wrong. 
+     * It should only receive ACK answers to its own Heartbeat messages.
+     */
     @Override
     protected void handleHeartbeatMessage(Message message){
         String payload = "Don't send heartbeats to the leader. If responding to one, use ACK.";
@@ -52,12 +57,24 @@ public class LeaderFollowerMessageHandler extends MessageHandler {
         this.sendMessage(answer);
     }
 
+    /**
+     * Leader should never receive SYNC_NODE_LIST from follower.
+     * This is an error case.
+     */
     @Override
     protected void handleSyncNodeListMessage(Message message){
-        Message answer = new Message(this.parentNode.getIp(), message.getSender(), "message answer", MessageType.SUCCESS);
-        this.sendMessage(answer);
+        System.out.println("Answer not implemented");
     }
 
+    /**
+     * Client can ask for navigation.
+     * Returns the next step for client. Message has to contain therefore Coordinate Array with:
+     * 0: position
+     * 1: destination
+     * When client reached its goal, the client is deleted from map.
+     * --> client is no more on street, parking somewhere.
+     * This is the same function as in LeaderClientMessageHandler.
+     */
     @Override
     protected void handleNavigationMessage(Message message){
         try {
@@ -100,12 +117,19 @@ public class LeaderFollowerMessageHandler extends MessageHandler {
         }
     }
 
-    //leader has to implement this method by its own cause it is waiting for the ack messages of the clients.
+    /**
+     * Leader is waiting for the ack messages of the clients.
+     * gotAnswer is used by Heartbeat class.
+     */
     @Override
     protected void handleAckMessage(Message message){
         this.heartbeat.setGotAnswer(true);
     }
 
+    /**
+     * Inits follower connections.
+     * @return true when successful, false if not. Only call run() / start() method when initialized correct.
+     */
     public Boolean registerConnection(){
         Message message = this.readMessage();
         System.out.println(this.parentNode.getIp() + " received a "+ message.getType() + " message: " + message.getPayload());
@@ -135,8 +159,6 @@ public class LeaderFollowerMessageHandler extends MessageHandler {
                     this.sendMessage(answer);
                     return false;
                 }
-                
-
             } catch (Exception e) {
                 System.out.println("Init message failed");
                 String payload = "Insert INetSocketAddress of own IP and Port in payload.";
@@ -152,6 +174,9 @@ public class LeaderFollowerMessageHandler extends MessageHandler {
         }
     }
 
+    /**
+     * When follower timed out (not answering), this method kills the connection.
+     */
     public void followerTimedOut(){
         try {
             this.socket.close();
@@ -161,6 +186,9 @@ public class LeaderFollowerMessageHandler extends MessageHandler {
         this.removeLostFollower();
     }
 
+    /**
+     * Removing follower from lists, updating other nodes in case of lost follower.
+     */
     private void removeLostFollower(){
         this.parentLeader.getNodeConnections().remove(this);
         this.parentLeader.getParentNode().getAllKnownNodes().remove(this.followerIp);

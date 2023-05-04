@@ -12,6 +12,11 @@ public abstract class MessageHandler extends Thread{
     protected String ip;
     protected int port;
 
+    /**
+     * For every node based device this is the constructor that shall be used.
+     * @param parentNode
+     * @param newConnection
+     */
     public MessageHandler(Node parentNode, Socket newConnection){
         this.parentNode = parentNode;
         this.socket = newConnection;
@@ -20,6 +25,12 @@ public abstract class MessageHandler extends Thread{
         this.initializeStreams(newConnection);
     }
 
+    /**
+     * Overloading constructor so clients (which aren't based on nodes) can also be based on message handler.
+     * @param newConnection
+     * @param ipAddress
+     * @param port
+     */
     public MessageHandler(Socket newConnection, String ipAddress, int port){
         this.parentNode = null;
         this.socket = newConnection;
@@ -28,6 +39,11 @@ public abstract class MessageHandler extends Thread{
         this.initializeStreams(newConnection);
     }
 
+    /**
+     * Reads message from input stream.
+     * Kills the connection in every exception case because it is always corrupted.
+     * @return message object or null
+     */
     protected Message readMessage() {
         try {
             Message received = (Message) this.inputStream.readObject();
@@ -43,6 +59,12 @@ public abstract class MessageHandler extends Thread{
         }
     }
 
+    /**
+     * waits for response after sending. Don't execute when receiveMessageRoutine is called.
+     * Since both methods read, there is one which kills the stream and ends the connection.
+     * @param message
+     * @return
+     */
     public Message sendMessageGetResponse(Message message){
         try {
             this.outputStream.writeObject(message);
@@ -58,6 +80,9 @@ public abstract class MessageHandler extends Thread{
         }
     }
 
+    /*
+     * Sends message. Kills socket in EOFException case (connection is stopped in this case)
+     */
     public void sendMessage(Message message){
         try {
             this.outputStream.writeObject(message);
@@ -68,6 +93,10 @@ public abstract class MessageHandler extends Thread{
         }
     }
 
+    /**
+     * Reads new messages, calls handling function for each message case.
+     * For efficient usage, call this method in loop to always be able to receive messages.
+     */
     protected void receiveMessagesRoutine(){
         try {
             Message message = this.readMessage();
@@ -102,33 +131,35 @@ public abstract class MessageHandler extends Thread{
         }
     }
 
+    // Every implementation of MessageHandler must implement these message type functionalities, even if it's an error case.
+    // MessageHandlers have to be able to answer each wrong message. 
     protected abstract void handleInitializeMessage(Message message);
     protected abstract void handleHeartbeatMessage(Message message);
     protected abstract void handleSyncNodeListMessage(Message message);
     protected abstract void handleNavigationMessage(Message message);
 
     //the following three codes should not be sent without context (proactively), so they should only received by a routine
-    //that is waiting for an answer (when using sendMessageGetResponse), not by the receivingMessages Routine
+    //that is waiting for an answer (when using sendMessageGetResponse), not by the receivingMessages Routine.
+    //They might be overrode if functionality is wanted.
 
     protected void handleSuccessMessage(Message message){
-        Message answer = new Message(this.ip, message.getSender(), "Please do not send answer codes as request.", MessageType.ERROR);
-        System.out.println(answer.getPayload());
-        // this.sendMessage(answer);
+        System.out.println("Please do not send answer codes as request.");
     }
 
     protected void handleErrorMessage(Message message){
-        Message answer = new Message(this.ip, message.getSender(), "Please do not send answer codes as request.", MessageType.ERROR);
-        System.out.println(answer.getPayload());
-        // this.sendMessage(answer);
+        System.out.println("Please do not send answer codes as request.");
     }
 
     protected void handleAckMessage(Message message){
-        Message answer = new Message(this.ip, message.getSender(), "Please do not send answer codes as request.", MessageType.ERROR);
-        System.out.println(answer.getPayload());
-        // this.sendMessage(answer);
+        System.out.println("Please do not send answer codes as request.");
     }
 
-
+    /**
+     * Initialize the output and input streams.
+     * Both are object streams because every sent package must be a message.
+     * Called for every message handler that is created (super constructor calls this)
+     * @param newConnection new socket which shall have streams initialized.
+     */
     protected void initializeStreams(Socket newConnection){
         try{
             OutputStream outputStream = newConnection.getOutputStream();
@@ -143,7 +174,7 @@ public abstract class MessageHandler extends Thread{
             System.out.println("Node read initialize failed");
         }        
     }
-
+    
     protected void closeSocket(){
         try {
             System.out.println(this.ip + " lost connection to opponent, closing own socket");

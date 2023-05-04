@@ -9,6 +9,10 @@ import project.message.Message;
 import project.message.MessageHandler;
 import project.message.MessageType;
 
+/**
+ * For every leader-client connection, a leader has a LeaderClientMessageHandler.
+ * Receives and sends messages from and to clients.
+ */
 public class LeaderClientMessageHandler extends MessageHandler {
     private Leader parentLeader;
     private String clientIp;
@@ -25,21 +29,42 @@ public class LeaderClientMessageHandler extends MessageHandler {
         }
     }
 
+    /**
+     * Initializing is implemented in registerConnection.
+     * Every other initialize message is an error case.
+     */
     @Override
     protected void handleInitializeMessage(Message message) {
-        System.out.println("noch net fertig");
+        System.out.println("answer not implemented");
     }
 
+    /**
+     * No heartbeat messages can be send by clients.
+     * This is an error case.
+     */
     @Override
     protected void handleHeartbeatMessage(Message message) {
-        System.out.println("noch net fertig");
+        System.out.println("answer not implemented");
     }
 
+    /**
+     * Same as Heartbeat, not a client functionality.
+     * This is an error case.
+     */
     @Override
     protected void handleSyncNodeListMessage(Message message) {
-        System.out.println("noch net fertig");
+        System.out.println("answer not implemented");
     }
 
+    /**
+     * Client can ask for navigation.
+     * Returns the next step for client. Message has to contain therefore Coordinate Array with:
+     * 0: position
+     * 1: destination
+     * When client reached its goal, the client is deleted from map.
+     * --> client is no more on street, parking somewhere.
+     * This is the same function as in LeaderFollowerMessageHandler.
+     */
     @Override
     protected void handleNavigationMessage(Message message){
         try {
@@ -82,6 +107,10 @@ public class LeaderClientMessageHandler extends MessageHandler {
         }
     }
 
+    /**
+     * Inits client connections.
+     * @return true when successful, false if not. Only call run() / start() method when initialized correct.
+     */
     public Boolean registerConnection(){
         Message message = this.readMessage();
         System.out.println(this.parentNode.getIp() + " received a "+ message.getType() + " message: " + message.getPayload());
