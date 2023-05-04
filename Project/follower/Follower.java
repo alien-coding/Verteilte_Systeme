@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.util.LinkedList;
 
 import project.Node;
+import project.Role;
 import project.message.Message;
 import project.message.MessageType;
 
@@ -24,6 +25,10 @@ public class Follower extends Thread {
         this.leaderPort = leaderPort;
     }
 
+    /**
+     * Tries to connect to leader first. Then opens up as Server it self.
+     * When no Leader is found, goes back to Role Unknown to figure out new leader (not implemented, only theory)
+     */
     public void run(){
         this.initLeaderConnection();
         try {
@@ -71,12 +76,14 @@ public class Follower extends Thread {
         } catch (IOException e) {
             System.out.println(this.parentNode.getIp() + ": connecting to leader failed");
             System.err.println(e.toString());
+            this.parentNode.setRole(Role.UNKNOWN);
             try {
-                this.connectionToLeader.getSocket().close();
+                if(this.connectionToLeader.getSocket() != null){
+                    this.connectionToLeader.getSocket().close();
+                }
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
-            //TODO: quit on this point
         }
     }
 

@@ -7,6 +7,10 @@ import project.message.Message;
 import project.message.MessageHandler;
 import project.message.MessageType;
 
+/**
+ * Message Handler for Followers that connect with Clients. Only for the follower side.
+ * run method waits for init message, then starts the receiving messages routine.
+ */
 public class FollowerClientMessageHandler extends MessageHandler{
     private Follower parentFollower;
     private String clientIp;
@@ -25,27 +29,43 @@ public class FollowerClientMessageHandler extends MessageHandler{
         this.parentFollower.getClientConnections().remove(this);
     }
 
-    //TODO
+    /**
+     * Since the actual initialize Message is handled in registerConnection(), 
+     * this method is for handling unwanted (later following) initialize messages.
+     */
     @Override
     protected void handleInitializeMessage(Message message){
         System.out.println("Answer not implemented");
     }
     
+    /**
+     * No Heartbeats that are sent from Clients, this is an error case
+     */
     @Override
     protected void handleHeartbeatMessage(Message message){
         System.out.println("Answer not implemented");
     }
     
+    /**
+     * Same as Heartbeats, functionality does not exist for Clients, this is an error case.
+     */
     @Override
     protected void handleSyncNodeListMessage(Message message){
         System.out.println("Answer not implemented");
     }
-
+    
+    /**
+     * Forward the Navigation Messages to the leader because leader is the one handling the functionality.
+     */
     @Override
     protected void handleNavigationMessage(Message message){
         this.parentFollower.getConnectionToLeader().sendMessage(message);
     }
 
+    /**
+     * Handles initialize Message. Waits for init message (first message) and complains if it is not a correct initialize.
+     * @return true when successfully initialized, false if not. 
+     */
     public Boolean registerConnection(){
         Message message = this.readMessage();
         System.out.println(this.parentNode.getIp() + " received a "+ message.getType() + " message: " + message.getPayload());

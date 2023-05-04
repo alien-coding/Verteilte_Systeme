@@ -79,8 +79,9 @@ public class Node extends Thread{
      */
     private void waitForRoleChange(Role designatedRole){
         while(this.role == designatedRole){
-            Util.sleep(1);
+            Util.sleep(10);
         }
+        System.out.println(this.ip + "s Role changed from " + designatedRole + " to " + this.role);
     }
 
     private void figureOutNewLeader(){

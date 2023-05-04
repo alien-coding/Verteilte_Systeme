@@ -10,6 +10,10 @@ import project.message.Message;
 import project.message.MessageHandler;
 import project.message.MessageType;
 
+/**
+ * Message Handler for Followers to connect with Leader. Only for the follower side.
+ * Run method starts the heartbeat checker which checks if leader is no more sending heartbeats and aborts if necessary. 
+ */
 public class FollowerLeaderMessageHandler extends MessageHandler{
     private Instant lastHeartbeat;
     private CheckHeartbeat checker;
@@ -26,6 +30,9 @@ public class FollowerLeaderMessageHandler extends MessageHandler{
         this.checker = new CheckHeartbeat(this);
     }
 
+    /**
+     * When connection to leader is lost (socket then gets closed), go back to Unknown and figure out new leader.
+     */
     public void run(){
         checker.start();
         while(!this.socket.isClosed()){
@@ -34,6 +41,12 @@ public class FollowerLeaderMessageHandler extends MessageHandler{
         this.getParentNode().setRole(Role.UNKNOWN); //When leader socket shuts down, init the system again
     }
 
+    /**
+     * Overriding the message because of forwarding functionality for messages. 
+     * When navigation message is received by a FollowerClientMessageHandler, it is forwarded to Leader. 
+     * Response by leader is then handled here. So Leader sends message with client as recipient.
+     * Follower realizes message is not for it self and tries to forward it. 
+     */
     @Override
     protected void receiveMessagesRoutine(){
         try {
@@ -80,6 +93,10 @@ public class FollowerLeaderMessageHandler extends MessageHandler{
         }
     }
 
+    /**
+     * When Leader times out (no heartbeats received), this method is called by the heartbeat checker.
+     * Leader connection is quit here (leader is dead) and role is set to Unknown to figure out new leader.
+     */
     public void leaderTimedOut(){
         try {
             this.socket.close();
@@ -94,6 +111,10 @@ public class FollowerLeaderMessageHandler extends MessageHandler{
         System.out.println("Answer not implemented");
     }
     
+    /**
+     * Sets time of last heartbeat received. This time is checked by heartbeat checker.
+     * Acknowledgement is send to let leader know follower is still alive.
+     */
     @Override
     protected void handleHeartbeatMessage(Message message){
         this.lastHeartbeat = Instant.now(); //not using message.getTime() because time of arrival is key, not time of message creation
@@ -101,11 +122,15 @@ public class FollowerLeaderMessageHandler extends MessageHandler{
         this.sendMessage(answer);
     }
     
+    /**
+     * When leader initializes new Follower successfully, this message type is sent by it.
+     * Set own known nodes to the new list.
+     */
     @Override
     protected void handleSyncNodeListMessage(Message message){
         try {
             HashMap<String, NodeSaver> updatedNodeList = (HashMap<String, NodeSaver>) message.getPayload();
-            if(updatedNodeList.size() >= 2){
+            if(updatedNodeList.size() >= 2){    //Minimum length of list must be self and leader, without the node cannot exist
                 this.parentNode.setAllKnownNodes(updatedNodeList);
                 System.out.println(this.parentNode.getIp() + " updated list of all nodes");
             }
@@ -118,6 +143,9 @@ public class FollowerLeaderMessageHandler extends MessageHandler{
         }
     }
 
+    /**
+     * Navigation messages are only sent by Clients, so not handled here. This case is an error case.
+     */
     @Override
     protected void handleNavigationMessage(Message message){
         System.out.println("Answer not implemented");
