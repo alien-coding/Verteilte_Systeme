@@ -8,6 +8,10 @@ import project.follower.Follower;
 import project.helpers.*;
 import project.leader.Leader;
 
+/**
+ * Node is the class for Leaders as well as followers. It handles the state of every node depending on its connections and errors.
+ * A Node can be seen as a physical unit.
+ */
 public class Node extends Thread{
     private Role role = Role.UNKNOWN;
     private String ip;
@@ -19,7 +23,6 @@ public class Node extends Thread{
     private String pathForBackUp;
     private HashMap<String, NodeSaver> allKnownNodes = new HashMap<String, NodeSaver>();
 
-    //TODO: change way of getting leader 
     private String leaderIp;
     private int leaderPort;
     
@@ -70,6 +73,10 @@ public class Node extends Thread{
         leader.interrupt();
     }
 
+    /**
+     * Wait for Role change which can be triggered by the Follower / Leader Object it self.
+     * @param designatedRole
+     */
     private void waitForRoleChange(Role designatedRole){
         while(this.role == designatedRole){
             Util.sleep(1);
@@ -85,7 +92,7 @@ public class Node extends Thread{
         this.leaderPort = leaderPort;
         for(HashMap.Entry<String, NodeSaver> entry : this.allKnownNodes.entrySet()){
             if(entry.getValue().getRole() == Role.LEADER){
-                entry.getValue().setRole(Role.FOLLOWER); //TODO wtf mach ich hier
+                entry.getValue().setRole(Role.FOLLOWER);
             }
         }
         this.allKnownNodes.put(leaderIp, new NodeSaver(Role.LEADER, leaderIp, leaderPort));

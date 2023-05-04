@@ -4,6 +4,10 @@ import project.client.Client;
 import project.helpers.Coordinate;
 
 public class Main {
+    /**
+     * Gets Arguments for initializing either a Node (leader or follower) or a client. For detailed usage, see README.md
+     * @param args
+     */
     public static void main(String[] args) {
         String ipAddress = "";
         int port = -1;
@@ -75,11 +79,10 @@ public class Main {
         } catch (Exception e) {
             printUsage();
         }
-        
     }
     
     private static void printUsage(){
-        System.out.println("Usage: project.Main (device type) (ipAdress:port) (leaderIp / entrypointIp)* (startPosition)* (destination)*");
+        System.out.println("Usage: project.Main (device type) (ipAddress:port) (leaderIp / entrypointIp)* (startPosition)* (destination)*");
         System.out.println("main.java node 127.0.0.1:200 --> (leader)");
         System.out.println("main.java node 127.0.0.2:200 127.0.0.1:201 --> (follower)");
         System.out.println("main.java client 127.0.1.1:200 127.0.0.1:200 1:1 10:10 --> (client)");

@@ -2,14 +2,24 @@ package project.message;
 import java.io.Serializable;
 import java.time.Instant;
 
+/**
+ * Used for communication. Every sent message must be from type message.
+ */
 public class Message implements Serializable {
     private String sender;
     private String receiver;
     private Object payload;
     private Instant time = Instant.now();
     private MessageType type;
-    private int sequenceNo = -1;
     
+    /**
+     * 
+     * @param sender own ip address so message can be answered
+     * @param receiver destination ip address 
+     * @param payload content of message, objects class must be Serializable 
+     * @param type Enum of MessageType, used for processing the message
+     * @throws IllegalArgumentException when one of the arguments is null
+     */
     public Message(String sender, String receiver, Object payload, MessageType type)
     {
         if(sender != null && receiver != null && payload != null && type != null){
@@ -34,6 +44,4 @@ public class Message implements Serializable {
     public void setSender(String sender){this.sender = sender;}
     public String getReceiver (){return this.receiver;}
     public void setReceiver(String receiver){this.receiver = receiver;}
-    public int getSequenceNo (){return this.sequenceNo;}
-    public void setRSequenceNo(int sequenceNo){this.sequenceNo = sequenceNo;}
 }

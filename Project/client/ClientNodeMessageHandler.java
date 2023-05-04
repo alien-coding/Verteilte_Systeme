@@ -6,10 +6,13 @@ import project.message.Message;
 import project.message.MessageHandler;
 import project.message.MessageType;
 
+/**
+ * Communication Handler for clients. Every client opens up a ClientNodeMessageHandler, which connects with the specified entry point.
+ */
 public class ClientNodeMessageHandler extends MessageHandler{
     private Client parentClient;
     private Object lastAnswer;
-    private Boolean isInited = false;
+    private Boolean isInited = false; //Used for checking if client has already successfully registered with entrypoint.
 
     public ClientNodeMessageHandler(Socket socket, String  ip, int port, Client parenClient){
         super(socket, ip, port);
@@ -43,9 +46,13 @@ public class ClientNodeMessageHandler extends MessageHandler{
         System.out.println("Unimplemented method 'handleNavigationMessage'");
     }
 
+    /**
+     * When client gets a success message, it is saved.
+     * The sending client can watch this variable and read it once the answer has returned.
+     */
     @Override
     protected void handleSuccessMessage(Message message) {
-        this.lastAnswer = message.getPayload();
+        this.lastAnswer = message.getPayload(); 
     }
 
     @Override
@@ -76,6 +83,7 @@ public class ClientNodeMessageHandler extends MessageHandler{
     public Object getLastAnswer() {
         return this.lastAnswer;
     }
+
     public void setLastAnswer(Object lastAnswer) {this.lastAnswer = lastAnswer;}
     public Boolean getIsInited() {return this.isInited;}
 }

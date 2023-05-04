@@ -20,17 +20,26 @@ public class Client extends Thread{
     private Coordinate destination;
     private Coordinate position;
 
-    
-
     private ClientNodeMessageHandler messageHandler;
 
+    /**
+     * Clients represent the users of the navigation system. They have a starting point and a destination.
+     * @param ip own ip address of the client
+     * @param port own port of the client
+     * @param start coordinates where the client starts
+     * @param destination coordinates to which the client wants to travel
+     */
     public Client(String ip, int port, Coordinate start, Coordinate destination){
         this.ip = ip;
         this.port = port;
         this.destination = destination;
         this.position = start;
     }
-
+    
+    /**
+     * Executes the client multithreaded. First, the client will initialize itself with the given entry point.
+     * After this, it will loop the navigation message send until the client has arrived at the destination.
+     */
     public void run(){
         try {
             Socket entryPointSocket = new Socket(this.entryPointIp, this.entryPointPort); 
@@ -40,7 +49,7 @@ public class Client extends Thread{
                 Util.sleep(100);
             }
             Util.sleep(500);
-            this.startNavigation();
+            this.runNavigation();
 
         } catch (IOException e) {
             System.out.println(this.ip + ": connecting to leader failed");
@@ -48,7 +57,11 @@ public class Client extends Thread{
         }
     }
 
-    public void startNavigation(){
+    /**
+     * Sends request to the already initialized entry point of the system.
+     * Repeats until arrival at destination.
+     */
+    private void runNavigation(){
         Instant start = Instant.now();
         while(!this.destination.compare(this.position)){
             Coordinate[] payload = new Coordinate[2];
@@ -63,7 +76,6 @@ public class Client extends Thread{
             this.messageHandler.setLastAnswer(null);
             System.out.println("Next Step: x: " + nextStep.getX() + " y: " + nextStep.getY());
             this.position = nextStep;
-            // Util.sleep(10);
         }
         Instant end = Instant.now();
         System.out.println(this.ip + " reached its destination in " + Duration.between(start, end) + "s, quit connection");
