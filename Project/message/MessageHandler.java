@@ -2,7 +2,6 @@ package project.message;
 
 import java.io.*;
 import java.net.Socket;
-
 import project.Node;
 
 public abstract class MessageHandler extends Thread{
@@ -46,8 +45,8 @@ public abstract class MessageHandler extends Thread{
     public Message sendMessageGetResponse(Message message){
         try {
             this.outputStream.writeObject(message);
-            Message response = this.readMessage();
-            return response;
+            Message received = (Message) this.inputStream.readObject();
+            return received;
         } catch (EOFException e) {
             System.err.println(e.toString());
             this.closeSocket();
@@ -112,17 +111,20 @@ public abstract class MessageHandler extends Thread{
 
     protected void handleSuccessMessage(Message message){
         Message answer = new Message(this.ip, message.getSender(), "Please do not send answer codes as request.", MessageType.ERROR);
-        this.sendMessage(answer);
+        System.out.println(answer.getPayload());
+        // this.sendMessage(answer);
     }
 
     protected void handleErrorMessage(Message message){
         Message answer = new Message(this.ip, message.getSender(), "Please do not send answer codes as request.", MessageType.ERROR);
-        this.sendMessage(answer);
+        System.out.println(answer.getPayload());
+        // this.sendMessage(answer);
     }
 
     protected void handleAckMessage(Message message){
         Message answer = new Message(this.ip, message.getSender(), "Please do not send answer codes as request.", MessageType.ERROR);
-        this.sendMessage(answer);
+        System.out.println(answer.getPayload());
+        // this.sendMessage(answer);
     }
 
 

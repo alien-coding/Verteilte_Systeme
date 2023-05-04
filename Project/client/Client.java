@@ -34,9 +34,10 @@ public class Client extends Thread{
             this.messageHandler.sendMessage(new Message(this.ip, this.entryPointIp, payload, MessageType.NAVIGATION));
             while(this.messageHandler.getLastAnswer() == null){
                 Util.sleep(2);
-                System.out.println("pending");
+                // System.out.println("pending");
             }
             Coordinate nextStep = (Coordinate) this.messageHandler.getLastAnswer();
+            // Coordinate nextStep = (Coordinate) answer.getPayload();
             System.out.println("Next Step: x: " + nextStep.getX() + " y: " + nextStep.getY());
         } catch (IOException e) {
             System.out.println(this.ip + ": connecting to leader failed");

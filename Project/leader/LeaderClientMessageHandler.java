@@ -14,12 +14,10 @@ public class LeaderClientMessageHandler extends MessageHandler {
     private Leader parentLeader;
     private String clientIp;
     private int clientPort;
-    private String uniqueId;
 
     public LeaderClientMessageHandler(Node parentNode, Socket newConnection, Leader parentLeader){
         super(parentNode, newConnection);
         this.parentLeader = parentLeader;
-        this.uniqueId = UUID.randomUUID().toString();
     }
 
     public void run(){
@@ -49,8 +47,8 @@ public class LeaderClientMessageHandler extends MessageHandler {
             Coordinate[] payload = (Coordinate[]) message.getPayload();
             try {
                 if(payload.length == 2){
-                    this.parentNode.getArea().place(this.uniqueId, payload[0]);
-                    Coordinate nextStep = this.parentNode.getLogic().move(this.uniqueId, payload[1]);
+                    this.parentNode.getArea().place(message.getSender(), payload[0]);
+                    Coordinate nextStep = this.parentNode.getLogic().move(message.getSender(), payload[1]);
                     Message answer = new Message(this.parentNode.getIp(), this.clientIp, nextStep, MessageType.SUCCESS); 
                     this.sendMessage(answer);
                 }

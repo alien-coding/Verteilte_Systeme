@@ -5,6 +5,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 
 import project.Role;
+import project.helpers.Coordinate;
 import project.Node;
 import project.NodeSaver;
 import project.message.*;
@@ -59,9 +60,25 @@ public class LeaderFollowerMessageHandler extends MessageHandler {
 
     @Override
     protected void handleNavigationMessage(Message message){
-        System.out.println("navigation not implemented");
-        Message answer = new Message(this.parentNode.getIp(), message.getSender(), "message answer", MessageType.SUCCESS);
-        this.sendMessage(answer);
+        try {
+            Coordinate[] payload = (Coordinate[]) message.getPayload();
+            try {
+                if(payload.length == 2){
+                    this.parentNode.getArea().place(message.getSender(), payload[0]);
+                    Coordinate nextStep = this.parentNode.getLogic().move(message.getSender(), payload[1]);
+                    Message answer = new Message(this.parentNode.getIp(), message.getSender(), nextStep, MessageType.SUCCESS); 
+                    this.sendMessage(answer);
+                }
+                else{
+                    System.out.println("Payload not containing all information");
+                }
+            } catch (Exception e) {
+                System.err.println("Move not possible: " + e.toString());
+            }
+            
+        } catch (Exception e) {
+            System.err.println(e.toString());
+        }
     }
 
     //leader has to implement this method by its own cause it is waiting for the ack messages of the clients.
