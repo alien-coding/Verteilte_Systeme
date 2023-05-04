@@ -38,6 +38,7 @@ public abstract class MessageHandler extends Thread{
             return null;
         } catch (Exception e){
             System.err.println(e.toString());
+            this.closeSocket();
             return null;
         }
     }

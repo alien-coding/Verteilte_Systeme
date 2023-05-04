@@ -64,9 +64,9 @@ public class ClientNodeMessageHandler extends MessageHandler{
         InetSocketAddress payload = new InetSocketAddress(this.ip, this.port);
         Message message = new Message(this.ip, this.parentClient.getEntryPointIp(), payload, MessageType.INITIALIZE);
         Message response = this.sendMessageGetResponse(message);
-        System.out.println(this.ip + " received initial leader response: " + response.getPayload());
+        
         if(response.getType() == MessageType.SUCCESS){
-            System.out.println("initializing of client successful");
+            System.out.println(this.ip + " received initial leader response: " + response.getPayload() + ". Connection established");
         }
         else{
             System.out.println("Init Message from " + this.ip + " was not answered with Success.");

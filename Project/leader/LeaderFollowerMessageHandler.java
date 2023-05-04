@@ -73,8 +73,14 @@ public class LeaderFollowerMessageHandler extends MessageHandler {
                     }
                     
                     Coordinate nextStep = this.parentNode.getLogic().move(message.getSender(), payload[1]);
-                    Message answer = new Message(this.parentNode.getIp(), message.getSender(), nextStep, MessageType.SUCCESS); 
-                    this.sendMessage(answer);
+                    if(!nextStep.compare(payload[0])){
+                        Message answer = new Message(this.parentNode.getIp(), message.getSender(), nextStep, MessageType.SUCCESS); 
+                        this.sendMessage(answer);
+                    }
+                    else{
+                        Message answer = new Message(this.parentNode.getIp(), message.getSender(), "Can't make move to next field", MessageType.ERROR); 
+                        this.sendMessage(answer);
+                    }
                 }
                 else{
                     System.out.println("Payload not containing all information");
@@ -90,7 +96,7 @@ public class LeaderFollowerMessageHandler extends MessageHandler {
             System.err.println(e.toString());
         }
     }
-
+    
     //leader has to implement this method by its own cause it is waiting for the ack messages of the clients.
     @Override
     protected void handleAckMessage(Message message){

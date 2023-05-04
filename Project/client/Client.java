@@ -32,25 +32,33 @@ public class Client extends Thread{
             Socket entryPointSocket = new Socket(this.entryPointIp, this.entryPointPort); 
             this.messageHandler = new ClientNodeMessageHandler(entryPointSocket, this.ip, this.port, this);
             this.messageHandler.start();
-            while((this.destination.getX() != this.position.getX()) && (this.destination.getY() != this.position.getY())){
-                Coordinate[] payload = new Coordinate[2];
-                payload[0] = this.position;
-                payload[1] = this.destination;
-
-                this.messageHandler.sendMessage(new Message(this.ip, this.entryPointIp, payload, MessageType.NAVIGATION));
-                while(this.messageHandler.getLastAnswer() == null){
-                    Util.sleep(2);
-                    // System.out.println("pending");
-                }
-                Coordinate nextStep = (Coordinate) this.messageHandler.getLastAnswer();
-                this.messageHandler.setLastAnswer(null);
-                System.out.println("Next Step: x: " + nextStep.getX() + " y: " + nextStep.getY());
-                this.position = nextStep;
-                // Util.sleep(10);
-            }
+            
         } catch (IOException e) {
             System.out.println(this.ip + ": connecting to leader failed");
             System.err.println(e.toString());
+        }
+    }
+
+    public void startNavigation(){
+        while((this.destination.getX() != this.position.getX()) && (this.destination.getY() != this.position.getY())){
+            Coordinate[] payload = new Coordinate[2];
+            payload[0] = this.position;
+            payload[1] = this.destination;
+
+            this.messageHandler.sendMessage(new Message(this.ip, this.entryPointIp, payload, MessageType.NAVIGATION));
+            while(this.messageHandler.getLastAnswer() == null){
+                Util.sleep(1);
+            }
+            Coordinate nextStep = (Coordinate) this.messageHandler.getLastAnswer();
+            this.messageHandler.setLastAnswer(null);
+            System.out.println("Next Step: x: " + nextStep.getX() + " y: " + nextStep.getY());
+            this.position = nextStep;
+            // Util.sleep(10);
+        }
+        try {
+            this.messageHandler.getSocket().close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
     

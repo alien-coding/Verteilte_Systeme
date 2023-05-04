@@ -19,6 +19,7 @@ public class ClientRoutine extends Thread {
             ServerSocket serverSocket = new ServerSocket();
             InetSocketAddress address = new InetSocketAddress(this.parentLeader.getAddressForClients(), this.parentLeader.getPortForClients());
             serverSocket.bind(address);
+            System.out.println("Leader accepting Clients now");
             while(!serverSocket.isClosed()){
                 Socket newConnection = serverSocket.accept();
                 LeaderClientMessageHandler messageHandler = new LeaderClientMessageHandler(this.parentLeader.getParentNode(), newConnection, this.parentLeader);

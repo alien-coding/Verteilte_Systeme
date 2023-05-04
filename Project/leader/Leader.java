@@ -33,10 +33,10 @@ public class Leader extends Thread{
     }
 
     public void run(){
-        ClientRoutine clientRoutine = new ClientRoutine(this);
         FollowerRoutine followerRoutine = new FollowerRoutine(this);
-        clientRoutine.start();
+        ClientRoutine clientRoutine = new ClientRoutine(this);
         followerRoutine.start();
+        clientRoutine.start();
     }
 
     public void updateNodeList(){

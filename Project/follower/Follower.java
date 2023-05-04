@@ -28,7 +28,7 @@ public class Follower extends Thread {
         this.initLeaderConnection();
         try {
             ServerSocket serverSocket = new ServerSocket();
-            InetSocketAddress address = new InetSocketAddress(this.parentNode.getIp(), this.parentNode.getPort());
+            InetSocketAddress address = new InetSocketAddress(this.parentNode.getIp(), 201);
             serverSocket.bind(address);
             while(!serverSocket.isClosed() && !this.connectionToLeader.getSocket().isClosed()){
                 Socket newConnection = serverSocket.accept();

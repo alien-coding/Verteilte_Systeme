@@ -55,8 +55,14 @@ public class LeaderClientMessageHandler extends MessageHandler {
                     }
                     
                     Coordinate nextStep = this.parentNode.getLogic().move(message.getSender(), payload[1]);
-                    Message answer = new Message(this.parentNode.getIp(), message.getSender(), nextStep, MessageType.SUCCESS); 
-                    this.sendMessage(answer);
+                    if(!nextStep.compare(payload[0])){
+                        Message answer = new Message(this.parentNode.getIp(), message.getSender(), nextStep, MessageType.SUCCESS); 
+                        this.sendMessage(answer);
+                    }
+                    else{
+                        Message answer = new Message(this.parentNode.getIp(), message.getSender(), "Can't make move to next field", MessageType.ERROR); 
+                        this.sendMessage(answer);
+                    }
                 }
                 else{
                     System.out.println("Payload not containing all information");
