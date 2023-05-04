@@ -9,21 +9,6 @@ import project.helpers.Coordinate;
 
 public class TestManyClients {
     public static void main(String[] args) {
-        // Node node1 = new Node(Role.LEADER, "127.0.0.1", 200);
-        // node1.start();
-        // Util.sleep(500);
-
-        // Node node2 = new Node(Role.FOLLOWER, "127.0.0.2", 200);
-        // node2.setLeader("127.0.0.1", 200);
-
-        // Node node3 = new Node(Role.FOLLOWER, "127.0.0.3", 200);
-        // node3.setLeader("127.0.0.1", 200);
-
-        // node2.start();
-        // // Util.sleep(500);
-        // node3.start();
-        // Util.sleep(3000);
-
         LinkedList<Client> allClients = new LinkedList<>();
 
         Instant start = Instant.now();
