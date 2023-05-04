@@ -81,7 +81,7 @@ public class Main {
     private static void printUsage(){
         System.out.println("Usage: project.Main (device type) (ipAdress:port) (leaderIp / entrypointIp)* (startPosition)* (destination)*");
         System.out.println("main.java node 127.0.0.1:200 --> (leader)");
-        System.out.println("main.java node 127.0.0.2:200 127.0.0.1:200 --> (follower)");
+        System.out.println("main.java node 127.0.0.2:200 127.0.0.1:201 --> (follower)");
         System.out.println("main.java client 127.0.1.1:200 127.0.0.1:200 1:1 10:10 --> (client)");
     }
 }
