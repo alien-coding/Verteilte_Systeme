@@ -2,6 +2,8 @@ package project.client;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.time.Duration;
+import java.time.Instant;
 
 import project.Util;
 import project.helpers.Coordinate;
@@ -17,6 +19,8 @@ public class Client extends Thread{
 
     private Coordinate destination;
     private Coordinate position;
+
+    
 
     private ClientNodeMessageHandler messageHandler;
 
@@ -45,6 +49,7 @@ public class Client extends Thread{
     }
 
     public void startNavigation(){
+        Instant start = Instant.now();
         while(!this.destination.compare(this.position)){
             Coordinate[] payload = new Coordinate[2];
             payload[0] = this.position;
@@ -60,7 +65,8 @@ public class Client extends Thread{
             this.position = nextStep;
             // Util.sleep(10);
         }
-        System.out.println(this.ip + " reached its destination, quit connection");
+        Instant end = Instant.now();
+        System.out.println(this.ip + " reached its destination in " + Duration.between(start, end) + "s, quit connection");
         try {
             this.messageHandler.getSocket().close();
         } catch (IOException e) {
@@ -78,4 +84,6 @@ public class Client extends Thread{
     public void setEntryPointPort(int entryPointPort) {this.entryPointPort = entryPointPort;}
     public ClientNodeMessageHandler getMessageHandler() {return this.messageHandler;}
     public void setMessageHandler(ClientNodeMessageHandler messageHandler) {this.messageHandler = messageHandler;};
+    public Coordinate getPosition() {return this.position;}
+    public Coordinate getDestination() {return this.destination;}
 }

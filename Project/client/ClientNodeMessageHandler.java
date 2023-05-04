@@ -46,7 +46,6 @@ public class ClientNodeMessageHandler extends MessageHandler{
     @Override
     protected void handleSuccessMessage(Message message) {
         this.lastAnswer = message.getPayload();
-        System.out.println("Saved last message");
     }
 
     @Override

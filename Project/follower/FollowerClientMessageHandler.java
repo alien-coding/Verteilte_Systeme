@@ -22,6 +22,7 @@ public class FollowerClientMessageHandler extends MessageHandler{
         while(!this.socket.isClosed()){
             this.receiveMessagesRoutine();
         }
+        this.parentFollower.getClientConnections().remove(this);
     }
 
     //TODO
