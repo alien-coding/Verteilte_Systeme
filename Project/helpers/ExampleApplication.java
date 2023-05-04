@@ -1,4 +1,4 @@
-package helpers;
+package project.helpers;
 import java.util.Random;
 
 /**
@@ -25,7 +25,7 @@ public class ExampleApplication {
                     short y = (short)r.nextInt(maxX);
 
                     targetPostions[i] = new Coordinate(x,y);
-                    logic.start((short) i);
+                    logic.start(Integer.toString(i));
                 } catch (Exception e)
                 {
                     System.err.println(e.getMessage());
@@ -41,7 +41,7 @@ public class ExampleApplication {
                 try
                 {
                     int idToMove = r.nextInt(maxClients);
-                    logic.move((short) idToMove, targetPostions[idToMove]);
+                    logic.move(Integer.toString(idToMove), targetPostions[idToMove]);
                     area.print();
                     Thread.sleep(100);
                 } catch (Exception e)
@@ -54,7 +54,7 @@ public class ExampleApplication {
             for (int i = 0; i < maxClients ; i++) {
                 try
                 {
-                    Coordinate finalPosition = area.getPosition((short) i);
+                    Coordinate finalPosition = area.getPosition(Integer.toString(i));
                     if (finalPosition.getX() == targetPostions[i].getX()
                             && finalPosition.getY() == targetPostions[i].getY()
                     )
