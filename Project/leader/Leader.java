@@ -22,9 +22,14 @@ public class Leader extends Thread{
         this.parentNode = node;
         this.addressForClients = addressForClients;
         this.portForClients = portForClients;
-        TrafficArea area = new TrafficArea(Config.MAX_PER_NODE, Config.SIZE_X, Config.SIZE_Y);
-        this.parentNode.setArea(area);
-        this.parentNode.setLogic(new TrafficControlLogic(area));
+        try {
+            TrafficArea area = new TrafficArea(Config.MAX_PER_NODE, Config.SIZE_X, Config.SIZE_Y);
+            this.parentNode.setArea(area);
+            this.parentNode.setLogic(new TrafficControlLogic(area));
+        } catch (Exception e) {
+            System.err.println(e.toString());
+        }
+        
     }
 
     public void run(){
